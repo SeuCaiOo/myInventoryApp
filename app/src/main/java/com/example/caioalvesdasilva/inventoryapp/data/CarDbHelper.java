@@ -38,15 +38,17 @@ public class CarDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create a String that contains the SQL statement to create the pets table
-        String SQL_CREATE_PETS_TABLE =  "CREATE TABLE " + CarContract.CarEntry.TABLE_NAME + " ("
+        String SQL_CREATE_CARS_TABLE =  "CREATE TABLE " + CarContract.CarEntry.TABLE_NAME + " ("
                 + CarContract.CarEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + CarContract.CarEntry.COLUMN_PET_NAME + " TEXT NOT NULL, "
-                + CarContract.CarEntry.COLUMN_PET_BREED + " TEXT, "
-                + CarContract.CarEntry.COLUMN_PET_GENDER + " INTEGER NOT NULL, "
-                + CarContract.CarEntry.COLUMN_PET_WEIGHT + " INTEGER NOT NULL DEFAULT 0);";
+                + CarContract.CarEntry.COLUMN_CAR_BRAND + " TEXT NOT NULL, "
+                + CarContract.CarEntry.COLUMN_CAR_MODEL + " TEXT NOT NULL, "
+                + CarContract.CarEntry.COLUMN_CAR_FUEL + " INTEGER NOT NULL, "
+                + CarContract.CarEntry.COLUMN_CAR_YEAR + " INTEGER, "
+                + CarContract.CarEntry.COLUMN_CAR_ENGINE + " REAL DEFAULT 1.0, "
+                + CarContract.CarEntry.COLUMN_CAR_MILEAGE + " INTEGER NOT NULL DEFAULT 0);";
 
         // Execute the SQL statement
-        db.execSQL(SQL_CREATE_PETS_TABLE);
+        db.execSQL(SQL_CREATE_CARS_TABLE);
     }
 
     /**

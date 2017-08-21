@@ -32,42 +32,59 @@ public final class CarContract {
         public final static String _ID = BaseColumns._ID;
 
         /**
-         * Name of the pet.
-         *
-         * Type: TEXT
-         */
-        public final static String COLUMN_PET_NAME ="name";
-
-        /**
          * Breed of the pet.
          *
          * Type: TEXT
          */
-        public final static String COLUMN_PET_BREED = "breed";
+        public final static String COLUMN_CAR_BRAND = "brand";
+
+
+        /**
+         * Name of the pet.
+         *
+         * Type: TEXT
+         */
+        public final static String COLUMN_CAR_MODEL = "model";
+
+        /**
+         * Year of the car.
+         *
+         * Type: INTEGER
+         */
+        public final static String COLUMN_CAR_YEAR = "year";
+
+
+        /**
+         * Engine of the car.
+         *
+         * Type: REAL
+         */
+        public final static String COLUMN_CAR_ENGINE = "engine";
+
 
         /**
          * Gender of the pet.
          *
-         * The only possible values are {@link #GENDER_UNKNOWN}, {@link #GENDER_MALE},
-         * or {@link #GENDER_FEMALE}.
+         * The only possible values are {@link #FUEL_ALCOHOL}, {@link #FUEL_GASOLINE},
+         * or {@link #FUEL_FLEX}.
          *
          * Type: INTEGER
          */
-        public final static String COLUMN_PET_GENDER = "gender";
+        public final static String COLUMN_CAR_FUEL = "fuel";
 
         /**
          * Weight of the pet.
          *
          * Type: INTEGER
          */
-        public final static String COLUMN_PET_WEIGHT = "weight";
+        public final static String COLUMN_CAR_MILEAGE = "mileage";
 
         /**
-         * Possible values for the gender of the pet.
+         * Possible values for the fuel of the car.
          */
-        public static final int GENDER_UNKNOWN = 0;
-        public static final int GENDER_MALE = 1;
-        public static final int GENDER_FEMALE = 2;
+        public static final int FUEL_GASOLINE = 0;
+        public static final int FUEL_ALCOHOL = 1;
+        public static final int FUEL_FLEX = 2;
     }
 
 }
