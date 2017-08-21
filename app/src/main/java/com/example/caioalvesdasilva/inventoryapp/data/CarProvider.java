@@ -14,6 +14,8 @@ import android.net.Uri;
  */
 public class CarProvider extends ContentProvider {
 
+    
+
     /** Database helper object */
     private CarDbHelper mDbHelper;
 
