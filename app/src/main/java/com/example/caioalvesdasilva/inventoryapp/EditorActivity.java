@@ -4,6 +4,8 @@ package com.example.caioalvesdasilva.inventoryapp;
  * Created by caio.alves.da.silva on 21/08/2017.
  */
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.example.caioalvesdasilva.inventoryapp.data.CarContract;
+import com.example.caioalvesdasilva.inventoryapp.data.CarDbHelper;
 
 /**
  * Allows user to create a new pet or edit an existing one.
@@ -22,22 +28,26 @@ import android.widget.Spinner;
 public class EditorActivity extends AppCompatActivity {
 
     /** EditText field to enter the pet's name */
-    private EditText mNameEditText;
+    private EditText mBrandEditText;
 
     /** EditText field to enter the pet's breed */
-    private EditText mBreedEditText;
+    private EditText mModelEditText;
+
+    private EditText mYearEditText;
+
+    private EditText mEngineEditTex;
 
     /** EditText field to enter the pet's weight */
-    private EditText mWeightEditText;
+    private EditText mMileageEditText;
 
     /** EditText field to enter the pet's gender */
-    private Spinner mGenderSpinner;
+    private Spinner mFuelSpinner;
 
     /**
      * Gender of the pet. The possible values are:
      * 0 for unknown gender, 1 for male, 2 for female.
      */
-    private int mGender = 0;
+    private int mFuel = CarContract.CarEntry.FUEL_GASOLINE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +55,13 @@ public class EditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_editor);
 
         // Find all relevant views that we will need to read user input from
-        mNameEditText = (EditText) findViewById(R.id.edit_pet_name);
-        mBreedEditText = (EditText) findViewById(R.id.edit_pet_breed);
-        mWeightEditText = (EditText) findViewById(R.id.edit_pet_weight);
-        mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
+        mBrandEditText = (EditText) findViewById(R.id.edit_car_brand);
+        mModelEditText = (EditText) findViewById(R.id.edit_car_model);
+        mYearEditText = (EditText) findViewById(R.id.edit_car_year);
+        mEngineEditTex = (EditText) findViewById(R.id.edit_car_engine);
+
+        mMileageEditText = (EditText) findViewById(R.id.edit_car_mileage);
+        mFuelSpinner = (Spinner) findViewById(R.id.spinner_fuel);
 
         setupSpinner();
     }
@@ -66,20 +79,20 @@ public class EditorActivity extends AppCompatActivity {
         genderSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
         // Apply the adapter to the spinner
-        mGenderSpinner.setAdapter(genderSpinnerAdapter);
+        mFuelSpinner.setAdapter(genderSpinnerAdapter);
 
         // Set the integer mSelected to the constant values
-        mGenderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mFuelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.gender_male))) {
-                        mGender = 1; // Male
+                        mFuel = 1; // Male
                     } else if (selection.equals(getString(R.string.gender_female))) {
-                        mGender = 2; // Female
+                        mFuel = 2; // Female
                     } else {
-                        mGender = 0; // Unknown
+                        mFuel = 0; // Unknown
                     }
                 }
             }
@@ -87,9 +100,54 @@ public class EditorActivity extends AppCompatActivity {
             // Because AdapterView is an abstract class, onNothingSelected must be defined
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mGender = 0; // Unknown
+                mFuel = 0; // Unknown
             }
         });
+    }
+
+    /**
+     * Get user input from editor and save new pet into database.
+     */
+    private void insertPet() {
+        // Read from input fields
+        // Use trim to eliminate leading or trailing white space
+        String brandString = mBrandEditText.getText().toString().trim();
+        String modelString = mModelEditText.getText().toString().trim();
+        String yearString = mYearEditText.getText().toString().trim();
+        String engineString = mEngineEditTex.getText().toString().trim();
+
+        String mileageString = mMileageEditText.getText().toString().trim();
+        int mileage = Integer.parseInt(mileageString);
+        int year = Integer.parseInt(yearString);
+        int engine = (int) Float.parseFloat(engineString);
+
+        // Create database helper
+        CarDbHelper mDbHelper = new CarDbHelper(this);
+
+        // Gets the database in write mode
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Create a ContentValues object where column names are the keys,
+        // and pet attributes from the editor are the values.
+        ContentValues values = new ContentValues();
+        values.put(CarContract.CarEntry.COLUMN_CAR_BRAND, brandString);
+        values.put(CarContract.CarEntry.COLUMN_CAR_MODEL, modelString);
+        values.put(CarContract.CarEntry.COLUMN_CAR_YEAR, year);
+        values.put(CarContract.CarEntry.COLUMN_CAR_ENGINE, engine);
+        values.put(CarContract.CarEntry.COLUMN_CAR_FUEL, mFuel);
+        values.put(CarContract.CarEntry.COLUMN_CAR_MILEAGE, mileage);
+
+        // Insert a new row for pet in the database, returning the ID of that new row.
+        long newRowId = db.insert(CarContract.CarEntry.TABLE_NAME, null, values);
+
+        // Show a toast message depending on whether or not the insertion was successful
+        if (newRowId == -1) {
+            // If the row ID is -1, then there was an error with insertion.
+            Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
+        } else {
+            // Otherwise, the insertion was successful and we can display a toast with the row ID.
+            Toast.makeText(this, "Pet saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -107,6 +165,10 @@ public class EditorActivity extends AppCompatActivity {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
                 // Do nothing for now
+                // Save pet to database
+                insertPet();
+                // Exit activity
+                finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:

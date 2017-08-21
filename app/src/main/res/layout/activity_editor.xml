@@ -19,91 +19,91 @@
 
         <!-- Input fields -->
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:paddingLeft="4dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="4dp">
 
-
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:orientation="horizontal">
-
-               <!-- Breed field -->
-               <EditText
-                   android:layout_width="0dp"
-                   android:layout_height="match_parent"
-                   android:layout_weight="1"
-                   android:textAlignment="center"
-                   android:id="@+id/edit_pet_breed"
-                   android:hint="@string/hint_pet_breed"
-                   android:inputType="textCapWords"
-                   style="@style/EditorFieldStyle" />
-
-               <!-- Name field -->
-               <EditText
-                   android:layout_width="0dp"
-                   android:layout_height="match_parent"
-                   android:layout_weight="1"
-                   android:textAlignment="center"
-                   android:id="@+id/edit_pet_name"
-                   android:hint="@string/hint_pet_name"
-                   android:inputType="textCapWords"
-                   style="@style/EditorFieldStyle" />
-           </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-            <EditText
-                android:layout_width="0dp"
+                <!-- Breed field -->
+                <EditText
+                    android:id="@+id/edit_car_brand"
+                    style="@style/EditorFieldStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="@string/hint_pet_breed"
+                    android:inputType="textCapWords"
+                    android:textAlignment="center" />
+
+                <!-- Name field -->
+                <EditText
+                    android:id="@+id/edit_car_model"
+                    style="@style/EditorFieldStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="@string/hint_pet_name"
+                    android:inputType="textCapWords"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/edit_car_year"
-                android:textAlignment="center"
-                android:hint="Year"
-                android:inputType="number"
-                style="@style/EditorFieldStyle" />
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/edit_car_engine"
-                android:textAlignment="center"
-                android:hint="Engine"
-                android:inputType="numberDecimal"
-                style="@style/EditorFieldStyle" />
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edit_car_year"
+                    style="@style/EditorFieldStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="Year"
+                    android:inputType="number"
+                    android:textAlignment="center" />
+
+                <EditText
+                    android:id="@+id/edit_car_engine"
+                    style="@style/EditorFieldStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="Engine"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="center" />
                 <!-- Units for weight (kg) -->
                 <TextView
                     android:id="@+id/label_litres_units"
-                    android:text="@string/unit_car_liters"
-                    style="@style/EditorUnitsStyle"/>
+                    style="@style/EditorUnitsStyle"
+                    android:text="@string/unit_car_liters" />
 
 
-                    <!-- Input field -->
-                    <LinearLayout
-                        android:layout_height="wrap_content"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:orientation="vertical">
+                <!-- Input field -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
 
-                        <!-- Gender drop-down spinner -->
-                        <Spinner
-                            android:id="@+id/spinner_gender"
-                            android:layout_height="48dp"
-                            android:layout_width="match_parent"
-                            android:spinnerMode="dropdown"/>
-                    </LinearLayout>
-
+                    <!-- Gender drop-down spinner -->
+                    <Spinner
+                        android:id="@+id/spinner_fuel"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:spinnerMode="dropdown" />
                 </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
 
 
     <!-- Measurement category -->
@@ -127,7 +127,7 @@
 
             <!-- Weight field -->
             <EditText
-                android:id="@+id/edit_pet_weight"
+                android:id="@+id/edit_car_mileage"
                 android:hint="@string/hint_pet_weight"
                 android:textAlignment="center"
                 android:inputType="number"
