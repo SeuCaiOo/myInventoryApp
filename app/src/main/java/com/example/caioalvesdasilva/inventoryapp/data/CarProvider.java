@@ -127,6 +127,32 @@ public class CarProvider extends ContentProvider {
      * for that specific row in the database.
      */
     private Uri insertPet(Uri uri, ContentValues values) {
+        // Check that the name is not null
+        String brand = values.getAsString(CarContract.CarEntry.COLUMN_CAR_BRAND);
+        if (brand == null) {
+            throw new IllegalArgumentException("Car requires a brand");
+        }
+
+        String model = values.getAsString(CarContract.CarEntry.COLUMN_CAR_MODEL);
+        if (model == null) {
+            throw new IllegalArgumentException("Car requires a model");
+        }
+
+        // Check that the gender is valid
+        Integer fuel = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_FUEL);
+        if (fuel == null || !CarContract.CarEntry.isValidFuel(fuel)) {
+            throw new IllegalArgumentException("Car requires valid fuel");
+        }
+
+        // If the weight is provided, check that it's greater than or equal to 0 kg
+        Integer mileage = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
+        if (mileage != null && mileage < 0) {
+            throw new IllegalArgumentException("Car requires valid mileage");
+        }
+
+        // No need to check the breed, any value is valid (including null).
+
+
         // Get writeable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 

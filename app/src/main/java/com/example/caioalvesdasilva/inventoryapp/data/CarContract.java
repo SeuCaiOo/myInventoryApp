@@ -113,6 +113,17 @@ public final class CarContract {
         public static final int FUEL_GASOLINE = 0;
         public static final int FUEL_ALCOHOL = 1;
         public static final int FUEL_FLEX = 2;
+
+        /**
+         * Returns whether or not the given gender is {@link #FUEL_ALCOHOL}, {@link #FUEL_GASOLINE},
+         * or {@link #FUEL_FLEX}.
+         */
+        public static boolean isValidFuel(int gender) {
+            if (gender == FUEL_ALCOHOL || gender == FUEL_GASOLINE || gender == FUEL_FLEX) {
+                return true;
+            }
+            return false;
+        }
     }
 
 }
