@@ -4,8 +4,12 @@ package com.example.caioalvesdasilva.inventoryapp;
  * Created by caio.alves.da.silva on 21/08/2017.
  */
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -19,13 +23,19 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.example.caioalvesdasilva.inventoryapp.data.CarContract;
 
 /**
  * Allows user to create a new pet or edit an existing one.
  */
-public class EditorActivity extends AppCompatActivity {
+public class EditorActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>{
+
+    /** Identifier for the pet data loader */
+    private static final int EXISTING_CAR_LOADER = 0;
+
+    /** Content URI for the existing pet (null if it's a new pet) */
+    private Uri mCurrentCarUri;
 
     /** EditText field to enter the pet's name */
     private EditText mBrandEditText;
@@ -57,16 +67,20 @@ public class EditorActivity extends AppCompatActivity {
         // Examine the intent that was used to launch this activity,
         // in order to figure out if we're creating a new pet or editing an existing one.
         Intent intent = getIntent();
-        Uri currentPetUri = intent.getData();
+        mCurrentCarUri = intent.getData();
 
         // If the intent DOES NOT contain a pet content URI, then we know that we are
         // creating a new pet.
-        if (currentPetUri == null) {
+        if (mCurrentCarUri == null) {
             // This is a new pet, so change the app bar to say "Add a Pet"
             setTitle(getString(R.string.editor_activity_title_new_car));
         } else {
             // Otherwise this is an existing pet, so change app bar to say "Edit Pet"
             setTitle(getString(R.string.editor_activity_title_edit_car));
+
+            // Initialize a loader to read the pet data from the database
+            // and display the current values in the editor
+            getLoaderManager().initLoader(EXISTING_CAR_LOADER, null, this);
         }
 
 
@@ -194,5 +208,88 @@ public class EditorActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        // Since the editor shows all pet attributes, define a projection that contains
+        // all columns from the pet table
+        String[] projection = {
+                CarContract.CarEntry._ID,
+                CarContract.CarEntry.COLUMN_CAR_BRAND,
+                CarContract.CarEntry.COLUMN_CAR_MODEL,
+                CarContract.CarEntry.COLUMN_CAR_YEAR,
+                CarContract.CarEntry.COLUMN_CAR_ENGINE,
+                CarContract.CarEntry.COLUMN_CAR_FUEL,
+                CarContract.CarEntry.COLUMN_CAR_MILEAGE };
+
+        // This loader will execute the ContentProvider's query method on a background thread
+        return new CursorLoader(this,   // Parent activity context
+                mCurrentCarUri,         // Query the content URI for the current pet
+                projection,             // Columns to include in the resulting Cursor
+                null,                   // No selection clause
+                null,                   // No selection arguments
+                null);                  // Default sort order
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        // Bail early if the cursor is null or there is less than 1 row in the cursor
+        if (cursor == null || cursor.getCount() < 1) {
+            return;
+        }
+
+        // Proceed with moving to the first row of the cursor and reading data from it
+        // (This should be the only row in the cursor)
+        if (cursor.moveToFirst()) {
+            // Find the columns of pet attributes that we're interested in
+            int brandColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_BRAND);
+            int modelColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MODEL);
+            int yearColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_YEAR);
+            int engineColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_ENGINE);
+            int fuelColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_FUEL);
+            int mileageColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
+
+            // Extract out the value from the Cursor for the given column index
+            String brand = cursor.getString(brandColumnIndex);
+            String model = cursor.getString(modelColumnIndex);
+            int year = cursor.getInt(yearColumnIndex);
+            float engine = cursor.getFloat(engineColumnIndex);
+            int fuel = cursor.getInt(fuelColumnIndex);
+            int mileage = cursor.getInt(mileageColumnIndex);
+
+            // Update the views on the screen with the values from the database
+            mBrandEditText.setText(brand);
+            mModelEditText.setText(model);
+            mYearEditText.setText(Integer.toString(year));
+            mEngineEditTex.setText(Float.toString(engine));
+            mMileageEditText.setText(Integer.toString(mileage));
+
+            // Gender is a dropdown spinner, so map the constant value from the database
+            // into one of the dropdown options (0 is Unknown, 1 is Male, 2 is Female).
+            // Then call setSelection() so that option is displayed on screen as the current selection.
+            switch (fuel) {
+                case CarContract.CarEntry.FUEL_ALCOHOL:
+                    mFuelSpinner.setSelection(1);
+                    break;
+                case CarContract.CarEntry.FUEL_FLEX:
+                    mFuelSpinner.setSelection(2);
+                    break;
+                default:
+                    mFuelSpinner.setSelection(0);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // If the loader is invalidated, clear out all the data from the input fields.
+        mBrandEditText.setText("");
+        mModelEditText.setText("");
+        mYearEditText.setText("");
+        mEngineEditTex.setText("");
+        mMileageEditText.setText("");
+        mFuelSpinner.setSelection(0); // Select "gasoline" fuel
     }
 }
