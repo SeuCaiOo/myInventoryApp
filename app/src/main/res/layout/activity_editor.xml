@@ -38,7 +38,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:hint="@string/hint_pet_breed"
+                    android:hint="@string/hint_car_brand"
                     android:inputType="textCapWords"
                     android:textAlignment="center" />
 
@@ -49,7 +49,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:hint="@string/hint_pet_name"
+                    android:hint="@string/hint_car_model"
                     android:inputType="textCapWords"
                     android:textAlignment="center" />
             </LinearLayout>
@@ -128,7 +128,7 @@
             <!-- Weight field -->
             <EditText
                 android:id="@+id/edit_car_mileage"
-                android:hint="@string/hint_pet_weight"
+                android:hint="@string/hint_car_mileage"
                 android:textAlignment="center"
                 android:inputType="number"
                 style="@style/EditorFieldStyle" />
@@ -136,7 +136,7 @@
             <!-- Units for weight (kg) -->
             <TextView
                 android:id="@+id/label_weight_units"
-                android:text="@string/unit_pet_weight"
+                android:text="@string/unit_car_mileage"
                 style="@style/EditorUnitsStyle"/>
         </RelativeLayout>
     </LinearLayout>

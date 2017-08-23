@@ -148,7 +148,7 @@ public class EditorActivity extends AppCompatActivity implements
         // Create adapter for spinner. The list options are from the String array it will use
         // the spinner will use the default layout
         ArrayAdapter genderSpinnerAdapter = ArrayAdapter.createFromResource(this,
-                R.array.array_gender_options, android.R.layout.simple_spinner_item);
+                R.array.array_fuel_options, android.R.layout.simple_spinner_item);
 
         // Specify dropdown layout style - simple list view with 1 item per line
         genderSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
@@ -162,9 +162,9 @@ public class EditorActivity extends AppCompatActivity implements
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
-                    if (selection.equals(getString(R.string.gender_male))) {
+                    if (selection.equals(getString(R.string.fuel_alcohol))) {
                         mFuel = 1; // Male
-                    } else if (selection.equals(getString(R.string.gender_female))) {
+                    } else if (selection.equals(getString(R.string.fuel_flex))) {
                         mFuel = 2; // Female
                     } else {
                         mFuel = 0; // Unknown
