@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.caioalvesdasilva.inventoryapp.data.CarContract;
@@ -65,59 +66,14 @@ public class CatalogActivity extends AppCompatActivity {
                 null,                   // Selection criteria
                 null);                  // The sort order for the returned rows
 
-        TextView displayView = (TextView) findViewById(R.id.text_view_pet);
+        // Find the ListView which will be populated with the pet data
+        ListView petListView = (ListView) findViewById(R.id.list);
 
-        try {
-            // Create a header in the Text View that looks like this:
-            //
-            // The pets table contains <number of rows in Cursor> pets.
-            // _id - name - breed - gender - weight
-            //
-            // In the while loop below, iterate through the rows of the cursor and display
-            // the information from each column in this order.
-            displayView.setText("The cars table contains " + cursor.getCount() + " cars.\n\n");
-            displayView.append(CarContract.CarEntry._ID + " - " +
-                    CarContract.CarEntry.COLUMN_CAR_BRAND + " - " +
-                    CarContract.CarEntry.COLUMN_CAR_MODEL + " - " +
-                    CarContract.CarEntry.COLUMN_CAR_YEAR + " - " +
-                    CarContract.CarEntry.COLUMN_CAR_ENGINE + " - " +
-                    CarContract.CarEntry.COLUMN_CAR_FUEL + " - " +
-                    CarContract.CarEntry.COLUMN_CAR_MILEAGE + "\n");
+        // Setup an Adapter to create a list item for each row of pet data in the Cursor.
+        CarCursorAdapter adapter = new CarCursorAdapter(this, cursor);
 
-            // Figure out the index of each column
-            int idColumnIndex = cursor.getColumnIndex(CarContract.CarEntry._ID);
-            int brandColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_BRAND);
-            int modelColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MODEL);
-            int yearColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_YEAR);
-            int engineColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_ENGINE);
-            int fuelColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_FUEL);
-            int mileageColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
-
-            // Iterate through all the returned rows in the cursor
-            while (cursor.moveToNext()) {
-                // Use that index to extract the String or Int value of the word
-                // at the current row the cursor is on.
-                int currentID = cursor.getInt(idColumnIndex);
-                String currentBrand = cursor.getString(brandColumnIndex);
-                String currentModel = cursor.getString(modelColumnIndex);
-                int currentYear = cursor.getInt(yearColumnIndex);
-                float currentEngine = cursor.getFloat(engineColumnIndex);
-                int currentFuel = cursor.getInt(fuelColumnIndex);
-                int currentMileage = cursor.getInt(mileageColumnIndex);
-                // Display the values from each column of the current row in the cursor in the TextView
-                displayView.append(("\n" + currentID + " - " +
-                        currentBrand + " - " +
-                        currentModel + " - " +
-                        currentYear + " - " +
-                        currentEngine + " - " +
-                        currentFuel + " - " +
-                        currentMileage));
-            }
-        } finally {
-            // Always close the cursor when you're done reading from it. This releases all its
-            // resources and makes it invalid.
-            cursor.close();
-        }
+        // Attach the adapter to the ListView.
+        petListView.setAdapter(adapter);
     }
 
     /**
