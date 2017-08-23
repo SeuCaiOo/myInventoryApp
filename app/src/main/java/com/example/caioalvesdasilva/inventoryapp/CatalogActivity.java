@@ -75,7 +75,7 @@ public class CatalogActivity extends AppCompatActivity {
             //
             // In the while loop below, iterate through the rows of the cursor and display
             // the information from each column in this order.
-            displayView.setText("The pets table contains " + cursor.getCount() + " pets.\n\n");
+            displayView.setText("The cars table contains " + cursor.getCount() + " cars.\n\n");
             displayView.append(CarContract.CarEntry._ID + " - " +
                     CarContract.CarEntry.COLUMN_CAR_BRAND + " - " +
                     CarContract.CarEntry.COLUMN_CAR_MODEL + " - " +

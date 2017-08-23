@@ -18,7 +18,7 @@
         </activity>
         <activity
             android:name=".EditorActivity"
-            android:label="@string/editor_activity_title_new_pet"
+            android:label="@string/editor_activity_title_new_car"
             android:theme="@style/EditorTheme"
             android:parentActivityName=".CatalogActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->
@@ -28,7 +28,7 @@
         </activity>
         <provider
             android:name=".data.CarProvider"
-            android:authorities="com.example.android.pets"
+            android:authorities="com.example.caioalvesdasilva.inventoryapp"
             android:exported="false" />
     </application>
 </manifest>
