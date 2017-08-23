@@ -47,10 +47,10 @@
     <string name="gender_female">Flex</string>
 
     <!-- Toast message in editor when new pet has been successfully inserted [CHAR LIMIT=NONE] -->
-    <string name="editor_insert_pet_successful">Pet saved</string>
+    <string name="editor_insert_car_successful">Pet saved</string>
 
     <!-- Toast message in editor when new pet has failed to be inserted [CHAR LIMIT=NONE] -->
-    <string name="editor_insert_pet_failed">Error with saving pet</string>
+    <string name="editor_insert_car_failed">Error with saving pet</string>
 
     <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
     <string name="empty_view_title_text">It\'s a bit lonely here...</string>
@@ -60,6 +60,12 @@
 
     <!-- Title for the activity to edit an existing pet [CHAR LIMIT=20] -->
     <string name="editor_activity_title_edit_car">Edit Car</string>
+
+    <!-- Toast message in editor when current pet was successfully updated [CHAR LIMIT=NONE] -->
+    <string name="editor_update_car_successful">Car updated</string>
+
+    <!-- Toast message in editor when current pet has failed to be updated [CHAR LIMIT=NONE] -->
+    <string name="editor_update_car_failed">Error with updating car</string>
 
 
 </resources>
