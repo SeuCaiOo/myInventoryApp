@@ -28,7 +28,7 @@
         </activity>
         <provider
             android:name=".data.CarProvider"
-            android:authorities="com.example.android.pets"
+            android:authorities="com.example.caioalvesdasilva.inventoryapp"
             android:exported="false" />
     </application>
 </manifest>
