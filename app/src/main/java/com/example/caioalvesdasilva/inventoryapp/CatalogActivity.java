@@ -1,6 +1,7 @@
 package com.example.caioalvesdasilva.inventoryapp;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.caioalvesdasilva.inventoryapp.data.CarContract;
@@ -52,6 +54,29 @@ public class CatalogActivity extends AppCompatActivity implements
         // There is no pet data yet (until the loader finishes) so pass in null for the Cursor.
         mCursorAdapter = new CarCursorAdapter(this, null);
         petListView.setAdapter(mCursorAdapter);
+
+        // Setup the item click listener
+        petListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // Create new intent to go to {@link EditorActivity}
+                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+
+                // Form the content URI that represents the specific pet that was clicked on,
+                // by appending the "id" (passed as input to this method) onto the
+                // {@link PetEntry#CONTENT_URI}.
+                // For example, the URI would be "content://com.example.android.pets/pets/2"
+                // if the pet with ID 2 was clicked on.
+                Uri currentPetUri = ContentUris.withAppendedId(CarContract.CarEntry.CONTENT_URI, id);
+
+                // Set the URI on the data field of the intent
+                intent.setData(currentPetUri);
+
+                // Launch the {@link EditorActivity} to display the data for the current pet.
+                startActivity(intent);
+            }
+        });
+
 
         // Kick off the loader
         getLoaderManager().initLoader(CAR_LOADER, null, this);
