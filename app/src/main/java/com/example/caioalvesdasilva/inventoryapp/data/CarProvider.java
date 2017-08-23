@@ -11,11 +11,15 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * {@link ContentProvider} for Pets app.
  */
 public class CarProvider extends ContentProvider {
+
+    /** Tag for the log messages */
+    public static final String LOG_TAG = CarProvider.class.getSimpleName();
 
     /** URI matcher code for the content URI for the pets table */
     private static final int CARS = 100;
@@ -103,22 +107,167 @@ public class CarProvider extends ContentProvider {
     }
 
     @Override
-    public String getType(Uri uri) {
-        return null;
-    }
-
-    @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case CARS:
+                return insertPet(uri, contentValues);
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+    }
+
+    /**
+     * Insert a pet into the database with the given content values. Return the new content URI
+     * for that specific row in the database.
+     */
+    private Uri insertPet(Uri uri, ContentValues values) {
+        // Check that the name is not null
+        String brand = values.getAsString(CarContract.CarEntry.COLUMN_CAR_BRAND);
+        if (brand == null) {
+            throw new IllegalArgumentException("Car requires a brand");
+        }
+
+        String model = values.getAsString(CarContract.CarEntry.COLUMN_CAR_MODEL);
+        if (model == null) {
+            throw new IllegalArgumentException("Car requires a model");
+        }
+
+        // Check that the gender is valid
+        Integer fuel = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_FUEL);
+        if (fuel == null || !CarContract.CarEntry.isValidFuel(fuel)) {
+            throw new IllegalArgumentException("Car requires valid fuel");
+        }
+
+        // If the weight is provided, check that it's greater than or equal to 0 kg
+        Integer mileage = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
+        if (mileage != null && mileage < 0) {
+            throw new IllegalArgumentException("Car requires valid mileage");
+        }
+
+        // No need to check the breed, any value is valid (including null).
+
+
+        // Get writeable database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        // Insert the new pet with the given values
+        long id = database.insert(CarContract.CarEntry.TABLE_NAME, null, values);
+        // If the ID is -1, then the insertion failed. Log an error and return null.
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+        // Return the new URI with the ID (of the newly inserted row) appended at the end
+        return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
-    public int delete(Uri uri, String s, String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues contentValues, String selection,
+                      String[] selectionArgs) {
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case CARS:
+                return updatePet(uri, contentValues, selection, selectionArgs);
+            case CAR_ID:
+                // For the PET_ID code, extract out the ID from the URI,
+                // so we know which row to update. Selection will be "_id=?" and selection
+                // arguments will be a String array containing the actual ID.
+                selection = CarContract.CarEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updatePet(uri, contentValues, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+    }
+
+    /**
+     * Update pets in the database with the given content values. Apply the changes to the rows
+     * specified in the selection and selection arguments (which could be 0 or 1 or more pets).
+     * Return the number of rows that were successfully updated.
+     */
+    private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        // If the {@link PetEntry#COLUMN_PET_NAME} key is present,
+        // check that the name value is not null.
+        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_BRAND)) {
+            String brand = values.getAsString(CarContract.CarEntry.COLUMN_CAR_BRAND);
+            if (brand == null) {
+                throw new IllegalArgumentException("Car requires a brand");
+            }
+        }
+
+        // If the {@link PetEntry#COLUMN_PET_NAME} key is present,
+        // check that the name value is not null.
+        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_MODEL)) {
+            String model = values.getAsString(CarContract.CarEntry.COLUMN_CAR_BRAND);
+            if (model == null) {
+                throw new IllegalArgumentException("Car requires a model");
+            }
+        }
+
+        // If the {@link PetEntry#COLUMN_PET_GENDER} key is present,
+        // check that the gender value is valid.
+        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_FUEL)) {
+            Integer fuel = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_FUEL);
+            if (fuel == null || !CarContract.CarEntry.isValidFuel(fuel)) {
+                throw new IllegalArgumentException("Car requires valid fuel");
+            }
+        }
+
+        // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
+        // check that the weight value is valid.
+        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_MILEAGE)) {
+            // Check that the weight is greater than or equal to 0 kg
+            Integer mileage = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
+            if (mileage != null && mileage < 0) {
+                throw new IllegalArgumentException("Car requires valid mileage");
+            }
+        }
+
+        // No need to check the breed, any value is valid (including null).
+
+        // If there are no values to update, then don't try to update the database
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        // Otherwise, get writeable database to update the data
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        // Returns the number of database rows affected by the update statement
+        return database.update(CarContract.CarEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        // Get writeable database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case CARS:
+                // Delete all rows that match the selection and selection args
+                return database.delete(CarContract.CarEntry.TABLE_NAME, selection, selectionArgs);
+            case CAR_ID:
+                // Delete a single row given by the ID in the URI
+                selection = CarContract.CarEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return database.delete(CarContract.CarEntry.TABLE_NAME, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
+    }
+
+    @Override
+    public String getType(Uri uri) {
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case CARS:
+                return CarContract.CarEntry.CONTENT_LIST_TYPE;
+            case CAR_ID:
+                return CarContract.CarEntry.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
+        }
     }
 }

@@ -4,6 +4,7 @@ package com.example.caioalvesdasilva.inventoryapp.data;
  * Created by caio.alves.da.silva on 21/08/2017.
  */
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -47,6 +48,18 @@ public final class CarContract {
 
         /** The content URI to access the pet data in the provider */
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_CARS);
+
+        /**
+         * The MIME type of the {@link #BASE_CONTENT_URI} for a list of pets.
+         */
+        public static final String CONTENT_LIST_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CARS;
+
+        /**
+         * The MIME type of the {@link #BASE_CONTENT_URI} for a single pet.
+         */
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CARS;
 
 
         /** Name of database table for pets */
@@ -113,6 +126,17 @@ public final class CarContract {
         public static final int FUEL_GASOLINE = 0;
         public static final int FUEL_ALCOHOL = 1;
         public static final int FUEL_FLEX = 2;
+
+        /**
+         * Returns whether or not the given gender is {@link #FUEL_ALCOHOL}, {@link #FUEL_GASOLINE},
+         * or {@link #FUEL_FLEX}.
+         */
+        public static boolean isValidFuel(int gender) {
+            if (gender == FUEL_ALCOHOL || gender == FUEL_GASOLINE || gender == FUEL_FLEX) {
+                return true;
+            }
+            return false;
+        }
     }
 
 }
