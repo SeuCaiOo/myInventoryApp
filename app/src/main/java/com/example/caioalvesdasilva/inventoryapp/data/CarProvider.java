@@ -167,12 +167,6 @@ public class CarProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, id);
     }
 
-
-    @Override
-    public int delete(Uri uri, String s, String[] strings) {
-        return 0;
-    }
-
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection,
                       String[] selectionArgs) {
@@ -247,5 +241,25 @@ public class CarProvider extends ContentProvider {
 
         // Returns the number of database rows affected by the update statement
         return database.update(CarContract.CarEntry.TABLE_NAME, values, selection, selectionArgs);
+    }
+
+    @Override
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        // Get writeable database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case CARS:
+                // Delete all rows that match the selection and selection args
+                return database.delete(CarContract.CarEntry.TABLE_NAME, selection, selectionArgs);
+            case CAR_ID:
+                // Delete a single row given by the ID in the URI
+                selection = CarContract.CarEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return database.delete(CarContract.CarEntry.TABLE_NAME, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
     }
 }
