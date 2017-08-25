@@ -1,15 +1,26 @@
 package com.example.caioalvesdasilva.inventoryapp;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.caioalvesdasilva.inventoryapp.data.CarContract;
+
+import static android.R.attr.id;
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -59,13 +70,14 @@ public class CarCursorAdapter extends CursorAdapter {
      *                correct row.
      */
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(final View view, final Context context, Cursor cursor) {
         // Find individual views that we want to modify in the list item layout
         TextView brandTextView = (TextView) view.findViewById(R.id.carBrand);
         TextView modelTextView = (TextView) view.findViewById(R.id.carModel);
         TextView quantityView = (TextView) view.findViewById(R.id.carQuantity);
         TextView engineView = (TextView) view.findViewById(R.id.carEngine);
         TextView priceView = (TextView) view.findViewById(R.id.carPrice);
+        ImageView sellView = (ImageView) view.findViewById(R.id.carSell);
 
         // Find the columns of pet attributes that we're interested in
         int brandColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_BRAND);
@@ -80,6 +92,13 @@ public class CarCursorAdapter extends CursorAdapter {
         String carQuantity = cursor.getString(quantityColumnIndex);
         String carEngine = cursor.getString (engineColumnIndex);
         String carPrice = cursor.getString(priceColumnsIndex);
+        final int quantityCar = cursor.getInt(quantityColumnIndex);
+
+        int carId = cursor.getInt(cursor.getColumnIndex(CarContract.CarEntry._ID));
+
+        final Uri currentCarUri = ContentUris.withAppendedId(CarContract.CarEntry.CONTENT_URI, carId);
+
+
 
         // If the pet breed is empty string or null, then use some default text
         // that says "Unknown brand", so the TextView isn't blank.
@@ -111,5 +130,37 @@ public class CarCursorAdapter extends CursorAdapter {
         quantityView.setText(carQuantity);
         engineView.setText(carEngine);
         priceView.setText(carPrice);
+
+
+
+        final int currentCarQuantity = cursor.getInt(quantityColumnIndex);
+        final Long id = cursor.getLong(cursor.getColumnIndex(CarContract.CarEntry._ID));
+
+
+
+        sellView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentResolver resolver = view.getContext().getContentResolver();
+                ContentValues values = new ContentValues();
+                if (quantityCar > 0) {
+                    int qq = quantityCar;
+                    Log.d(TAG, "new quabtity= " + qq);
+                    values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, --qq);
+                    resolver.update(
+                            currentCarUri,
+                            values,
+                            null,
+                            null
+                    );
+                    context.getContentResolver().notifyChange(currentCarUri, null);
+                } else {
+                    Toast.makeText(context, "Item out of stock", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
+        });
+
     }
 }

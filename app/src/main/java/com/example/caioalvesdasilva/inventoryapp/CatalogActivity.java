@@ -17,8 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.caioalvesdasilva.inventoryapp.data.CarContract;
+
+import static com.example.caioalvesdasilva.inventoryapp.data.CarContract.CarEntry.COLUMN_CAR_QUANTITY;
+import static com.example.caioalvesdasilva.inventoryapp.data.CarContract.CarEntry.CONTENT_URI;
 
 public class CatalogActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -68,7 +72,7 @@ public class CatalogActivity extends AppCompatActivity implements
                 // {@link PetEntry#CONTENT_URI}.
                 // For example, the URI would be "content://com.example.android.pets/pets/2"
                 // if the pet with ID 2 was clicked on.
-                Uri currentPetUri = ContentUris.withAppendedId(CarContract.CarEntry.CONTENT_URI, id);
+                Uri currentPetUri = ContentUris.withAppendedId(CONTENT_URI, id);
 
                 // Set the URI on the data field of the intent
                 intent.setData(currentPetUri);
@@ -103,14 +107,14 @@ public class CatalogActivity extends AppCompatActivity implements
         // Use the {@link PetEntry#CONTENT_URI} to indicate that we want to insert
         // into the pets database table.
         // Receive the new content URI that will allow us to access Toto's data in the future.
-        Uri newUri = getContentResolver().insert(CarContract.CarEntry.CONTENT_URI, values);
+        Uri newUri = getContentResolver().insert(CONTENT_URI, values);
     }
 
     /**
      * Helper method to delete all pets in the database.
      */
     private void deleteAllPets() {
-        int rowsDeleted = getContentResolver().delete(CarContract.CarEntry.CONTENT_URI, null, null);
+        int rowsDeleted = getContentResolver().delete(CONTENT_URI, null, null);
         Log.v("CatalogActivity", rowsDeleted + " rows deleted from pet database");
     }
 
@@ -140,6 +144,37 @@ public class CatalogActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+
+
+    public void onListItemClick(long id) {
+        Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+
+        Uri currentItemUri = ContentUris.withAppendedId(CONTENT_URI, id);
+        intent.setData(currentItemUri);
+
+        startActivity(intent);
+    }
+
+    public void onSaleButtonClick(long id, int quantity) {
+        Uri currentItemUri = ContentUris.withAppendedId(CONTENT_URI, id);
+
+        int newQuantity = quantity > 0 ? quantity - 1 : 0;
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CAR_QUANTITY, newQuantity);
+
+        int rowsAffected = getContentResolver().update(currentItemUri, values, null, null);
+        if (quantity == newQuantity) {
+            // If no rows were affected, then there was an error with the update.
+
+        } else if (quantity != newQuantity) {
+            // Otherwise, the update was successful and we can display a toast.
+        }
+    }
+
+
+
+
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // Define a projection that specifies the columns from the table we care about.
@@ -154,7 +189,7 @@ public class CatalogActivity extends AppCompatActivity implements
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
-                CarContract.CarEntry.CONTENT_URI,   // Provider content URI to query
+                CONTENT_URI,   // Provider content URI to query
                 projection,             // Columns to include in the resulting Cursor
                 null,                   // No selection clause
                 null,                   // No selection arguments
