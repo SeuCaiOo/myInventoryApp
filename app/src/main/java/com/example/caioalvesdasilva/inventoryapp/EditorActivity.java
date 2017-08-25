@@ -56,7 +56,11 @@ public class EditorActivity extends AppCompatActivity implements
 
     private EditText mYearEditText;
 
-    private EditText mEngineEditTex;
+    private EditText mEngineEditText;
+
+    private EditText mQuatityEditText;
+
+    private EditText mPriceEditText;
 
     /**
      * EditText field to enter the pet's weight
@@ -123,7 +127,9 @@ public class EditorActivity extends AppCompatActivity implements
         mBrandEditText = (EditText) findViewById(R.id.edit_car_brand);
         mModelEditText = (EditText) findViewById(R.id.edit_car_model);
         mYearEditText = (EditText) findViewById(R.id.edit_car_year);
-        mEngineEditTex = (EditText) findViewById(R.id.edit_car_engine);
+        mEngineEditText = (EditText) findViewById(R.id.edit_car_engine);
+        mQuatityEditText = (EditText) findViewById(R.id.edit_car_quantity);
+        mPriceEditText = (EditText) findViewById(R.id.edit_car_price);
 
         mMileageEditText = (EditText) findViewById(R.id.edit_car_mileage);
         mFuelSpinner = (Spinner) findViewById(R.id.spinner_fuel);
@@ -134,8 +140,10 @@ public class EditorActivity extends AppCompatActivity implements
         mBrandEditText.setOnTouchListener(mTouchListener);
         mModelEditText.setOnTouchListener(mTouchListener);
         mYearEditText.setOnTouchListener(mTouchListener);
-        mEngineEditTex.setOnTouchListener(mTouchListener);
+        mEngineEditText.setOnTouchListener(mTouchListener);
         mMileageEditText.setOnTouchListener(mTouchListener);
+        mQuatityEditText.setOnTouchListener(mTouchListener);
+        mPriceEditText.setOnTouchListener(mTouchListener);
         mFuelSpinner.setOnTouchListener(mTouchListener);
 
         setupSpinner();
@@ -189,10 +197,11 @@ public class EditorActivity extends AppCompatActivity implements
         String brandString = mBrandEditText.getText().toString().trim();
         String modelString = mModelEditText.getText().toString().trim();
         String yearString = mYearEditText.getText().toString().trim();
-        String engineString = mEngineEditTex.getText().toString().trim();
+        String engineString = mEngineEditText.getText().toString().trim();
+        String quantityString = mQuatityEditText.getText().toString().trim();
+        String priceString = mPriceEditText.getText().toString().trim();
         String mileageString = mMileageEditText.getText().toString().trim();
-        int year = Integer.parseInt(yearString);
-        int engine = (int) Float.parseFloat(engineString);
+
 
         // Check if this is supposed to be a new pet
         // and check if all the fields in the editor are blank
@@ -209,8 +218,8 @@ public class EditorActivity extends AppCompatActivity implements
         ContentValues values = new ContentValues();
         values.put(CarContract.CarEntry.COLUMN_CAR_BRAND, brandString);
         values.put(CarContract.CarEntry.COLUMN_CAR_MODEL, modelString);
-        values.put(CarContract.CarEntry.COLUMN_CAR_YEAR, year);
-        values.put(CarContract.CarEntry.COLUMN_CAR_ENGINE, engine);
+        values.put(CarContract.CarEntry.COLUMN_CAR_ENGINE, engineString);
+        values.put(CarContract.CarEntry.COLUMN_CAR_PRICE, priceString);
         values.put(CarContract.CarEntry.COLUMN_CAR_FUEL, mFuel);
         // If the weight is not provided by the user, don't try to parse the string into an
         // integer value. Use 0 by default.
@@ -219,6 +228,19 @@ public class EditorActivity extends AppCompatActivity implements
             mileage = Integer.parseInt(mileageString);
         }
         values.put(CarContract.CarEntry.COLUMN_CAR_MILEAGE, mileage);
+
+        int quantity = 0;
+        if (!TextUtils.isEmpty(quantityString)) {
+            quantity = Integer.parseInt(quantityString);
+        }
+        values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, quantity);
+
+        int year = 0;
+        if (!TextUtils.isEmpty(yearString)) {
+            year = Integer.parseInt(quantityString);
+        }
+        values.put(CarContract.CarEntry.COLUMN_CAR_YEAR, year);
+
 
         // Determine if this is a new or existing pet by checking if mCurrentPetUri is null or not
         if (mCurrentCarUri == null) {
@@ -361,6 +383,8 @@ public class EditorActivity extends AppCompatActivity implements
                 CarContract.CarEntry.COLUMN_CAR_YEAR,
                 CarContract.CarEntry.COLUMN_CAR_ENGINE,
                 CarContract.CarEntry.COLUMN_CAR_FUEL,
+                CarContract.CarEntry.COLUMN_CAR_QUANTITY,
+                CarContract.CarEntry.COLUMN_CAR_PRICE,
                 CarContract.CarEntry.COLUMN_CAR_MILEAGE};
 
         // This loader will execute the ContentProvider's query method on a background thread
@@ -388,21 +412,28 @@ public class EditorActivity extends AppCompatActivity implements
             int yearColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_YEAR);
             int engineColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_ENGINE);
             int fuelColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_FUEL);
+            int quantityColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
+            int priceColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_PRICE);
+
             int mileageColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
 
             // Extract out the value from the Cursor for the given column index
             String brand = cursor.getString(brandColumnIndex);
             String model = cursor.getString(modelColumnIndex);
             int year = cursor.getInt(yearColumnIndex);
-            float engine = cursor.getFloat(engineColumnIndex);
+            String  engine = cursor.getString(engineColumnIndex);
             int fuel = cursor.getInt(fuelColumnIndex);
+            int quantity = cursor.getInt(quantityColumnIndex);
+            String price = cursor.getString(priceColumnIndex);
             int mileage = cursor.getInt(mileageColumnIndex);
 
             // Update the views on the screen with the values from the database
             mBrandEditText.setText(brand);
             mModelEditText.setText(model);
             mYearEditText.setText(Integer.toString(year));
-            mEngineEditTex.setText(Float.toString(engine));
+            mEngineEditText.setText(engine);
+            mQuatityEditText.setText(Integer.toString(quantity));
+            mPriceEditText.setText(price);
             mMileageEditText.setText(Integer.toString(mileage));
 
             // Gender is a dropdown spinner, so map the constant value from the database
@@ -428,7 +459,9 @@ public class EditorActivity extends AppCompatActivity implements
         mBrandEditText.setText("");
         mModelEditText.setText("");
         mYearEditText.setText("");
-        mEngineEditTex.setText("");
+        mEngineEditText.setText("");
+        mQuatityEditText.setText("");
+        mPriceEditText.setText("");
         mMileageEditText.setText("");
         mFuelSpinner.setSelection(0); // Select "gasoline" fuel
     }

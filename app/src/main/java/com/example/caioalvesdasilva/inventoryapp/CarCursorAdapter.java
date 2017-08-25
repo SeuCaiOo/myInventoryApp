@@ -63,23 +63,53 @@ public class CarCursorAdapter extends CursorAdapter {
         // Find individual views that we want to modify in the list item layout
         TextView brandTextView = (TextView) view.findViewById(R.id.carBrand);
         TextView modelTextView = (TextView) view.findViewById(R.id.carModel);
+        TextView quantityView = (TextView) view.findViewById(R.id.carQuantity);
+        TextView engineView = (TextView) view.findViewById(R.id.carEngine);
+        TextView priceView = (TextView) view.findViewById(R.id.carPrice);
 
         // Find the columns of pet attributes that we're interested in
         int brandColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_BRAND);
         int modelColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MODEL);
+        int quantityColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
+        int engineColumnIndex= cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_ENGINE);
+        int priceColumnsIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_PRICE);
 
         // Read the pet attributes from the Cursor for the current pet
         String carBrand = cursor.getString(brandColumnIndex);
         String carModel = cursor.getString(modelColumnIndex);
+        String carQuantity = cursor.getString(quantityColumnIndex);
+        String carEngine = cursor.getString (engineColumnIndex);
+        String carPrice = cursor.getString(priceColumnsIndex);
+
+        // If the pet breed is empty string or null, then use some default text
+        // that says "Unknown brand", so the TextView isn't blank.
+        if (TextUtils.isEmpty(carBrand)) {
+            carBrand = context.getString(R.string.unknown_brand);
+        }
+
+        // If the pet breed is empty string or null, then use some default text
+        // that says "Unknown model", so the TextView isn't blank.
+        if (TextUtils.isEmpty(carModel)) {
+            carModel = context.getString(R.string.unknown_model);
+        }
+
 
         // If the pet breed is empty string or null, then use some default text
         // that says "Unknown breed", so the TextView isn't blank.
-        if (TextUtils.isEmpty(carBrand)) {
-            carBrand = context.getString(R.string.unknown_brand);
+        if (TextUtils.isEmpty(carEngine)) {
+            carEngine = context.getString(R.string.unknown_engine);
+        }
+        // If the pet breed is empty string or null, then use some default text
+        // that says "Unknown breed", so the TextView isn't blank.
+        if (TextUtils.isEmpty(carPrice)) {
+            carPrice = context.getString(R.string.unknown_price);
         }
 
         // Update the TextViews with the attributes for the current pet
         brandTextView.setText(carBrand);
         modelTextView.setText(carModel);
+        quantityView.setText(carQuantity);
+        engineView.setText(carEngine);
+        priceView.setText(carPrice);
     }
 }

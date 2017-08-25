@@ -56,7 +56,7 @@
                     android:id="@+id/carModel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.2"
                     android:fontFamily="sans-serif-medium"
                     android:text="Santana"
                     android:textAppearance="?android:textAppearanceMedium"
@@ -131,18 +131,20 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-smallcaps"
-                    android:text="U$ 500"
+                    android:layout_gravity="center"
+                    android:text="500"
                     android:textAppearance="?android:textAppearanceSmall"
                     android:textColor="#2B3D4D" />
 
                 <ImageView
+                    android:id="@+id/carSell"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@mipmap/ic_shop"
                     android:layout_margin="5dp"/>
 
                 <TextView
-                    android:id="@+id/carNumber"
+                    android:id="@+id/carQuantity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"

@@ -241,7 +241,7 @@
 
                         <!-- Weight field -->
                         <EditText
-                            android:id="@+id/edit_car_quantity2"
+                            android:id="@+id/edit_car_quantity"
                             style="@style/EditorFieldStyle"
                             android:hint="@string/hint_car_quantity"
                             android:layout_width="match_parent"
@@ -269,10 +269,10 @@
 
                         <!-- Weight field -->
                         <EditText
-                            android:id="@+id/edit_car_price2"
+                            android:id="@+id/edit_car_price"
                             style="@style/EditorFieldStyle"
                             android:hint="@string/hint_car_price"
-                            android:inputType="number"
+                            android:inputType="numberDecimal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAlignment="center"

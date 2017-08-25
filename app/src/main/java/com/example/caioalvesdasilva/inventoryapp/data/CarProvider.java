@@ -7,11 +7,14 @@ package com.example.caioalvesdasilva.inventoryapp.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
+
+import java.util.IllegalFormatException;
 
 /**
  * {@link ContentProvider} for Pets app.
@@ -82,7 +85,7 @@ public class CarProvider extends ContentProvider {
                 // could contain multiple rows of the pets table.
                 cursor = database.query(CarContract.CarEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
-                break;
+                    break;
             case CAR_ID:
                 // For the PET_ID code, extract out the ID from the URI.
                 // For an example URI such as "content://com.example.android.pets/pets/3",
@@ -150,6 +153,19 @@ public class CarProvider extends ContentProvider {
         if (mileage != null && mileage < 0) {
             throw new IllegalArgumentException("Car requires valid mileage");
         }
+
+        // If the quantity is provided, check that it's greater than or equal to 0 kg
+        Integer quantity = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
+        if (quantity != null && quantity < 0) {
+            throw new IllegalArgumentException("Car requeries valid quantity");
+        }
+
+        // If the quantity is provided, check that it's greater than or equal to 0 kg
+        Integer price = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_PRICE);
+        if (price != null && price < 0) {
+            throw new IllegalArgumentException("Car requeries valid price");
+        }
+
 
         // No need to check the breed, any value is valid (including null).
 
@@ -233,6 +249,17 @@ public class CarProvider extends ContentProvider {
                 throw new IllegalArgumentException("Car requires valid mileage");
             }
         }
+
+        // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
+        // check that the quantity value is valid.
+        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_QUANTITY)) {
+            // Check that the weight is greater than or equal to 0 kg
+            Integer quantity = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
+            if (quantity != null && quantity < 0) {
+                throw new IllegalArgumentException("Car requires valid quantity");
+            }
+        }
+
 
         // No need to check the breed, any value is valid (including null).
 

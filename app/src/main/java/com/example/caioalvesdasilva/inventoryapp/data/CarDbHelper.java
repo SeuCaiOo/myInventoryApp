@@ -16,12 +16,12 @@ public class CarDbHelper extends SQLiteOpenHelper {
     public static final String LOG_TAG = CarDbHelper.class.getSimpleName();
 
     /** Name of the database file */
-    private static final String DATABASE_NAME = "dealership.db";
+    private static final String DATABASE_NAME = "1cardealership.db";
 
     /**
      * Database version. If you change the database schema, you must increment the database version.
      */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     /**
      * Constructs a new instance of {@link CarDbHelper}.
@@ -38,13 +38,16 @@ public class CarDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create a String that contains the SQL statement to create the pets table
-        String SQL_CREATE_CARS_TABLE =  "CREATE TABLE " + CarContract.CarEntry.TABLE_NAME + " ("
+
+        String SQL_CREATE_CARS_TABLE =  "CREATE TABLE IF NOT EXISTS " + CarContract.CarEntry.TABLE_NAME + " ("
                 + CarContract.CarEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + CarContract.CarEntry.COLUMN_CAR_BRAND + " TEXT NOT NULL, "
                 + CarContract.CarEntry.COLUMN_CAR_MODEL + " TEXT NOT NULL, "
                 + CarContract.CarEntry.COLUMN_CAR_FUEL + " INTEGER NOT NULL, "
                 + CarContract.CarEntry.COLUMN_CAR_YEAR + " INTEGER, "
-                + CarContract.CarEntry.COLUMN_CAR_ENGINE + " REAL DEFAULT 1.0, "
+                + CarContract.CarEntry.COLUMN_CAR_ENGINE + " TEXT DEFAULT 1.0, "
+                + CarContract.CarEntry.COLUMN_CAR_QUANTITY + " INTEGER NOT NULL, "
+                + CarContract.CarEntry.COLUMN_CAR_PRICE + " TEXT NOT NULL, "
                 + CarContract.CarEntry.COLUMN_CAR_MILEAGE + " INTEGER NOT NULL DEFAULT 0);";
 
         // Execute the SQL statement

@@ -109,4 +109,16 @@
 
     <!-- Label for the pet's breed if the breed is unknown [CHAR LIMIT=20] -->
     <string name="unknown_brand">Unknown brand</string>
+
+    <!-- Label for the pet's breed if the breed is unknown [CHAR LIMIT=20] -->
+    <string name="unknown_model">Unknown model</string>
+
+    <!-- Label for the pet's breed if the breed is unknown [CHAR LIMIT=20] -->
+    <string name="unknown_engine">1.0</string>
+
+    <!-- Label for the pet's breed if the breed is unknown [CHAR LIMIT=20] -->
+    <string name="unknown_price">Free</string>
+
+
+
 </resources>

@@ -114,10 +114,22 @@ public final class CarContract {
         public final static String COLUMN_CAR_FUEL = "fuel";
 
         /**
-         * Weight of the pet.
+         * Quantity of the car.
          *
          * Type: INTEGER
          */
+        public final static String COLUMN_CAR_QUANTITY = "quantity";
+
+        /**
+         * Price of the cars.
+         *
+         * Type: REAL
+         */
+        public final static String COLUMN_CAR_PRICE = "price";
+
+
+
+
         public final static String COLUMN_CAR_MILEAGE = "mileage";
 
         /**

@@ -95,6 +95,8 @@ public class CatalogActivity extends AppCompatActivity implements
         values.put(CarContract.CarEntry.COLUMN_CAR_YEAR, "2002");
         values.put(CarContract.CarEntry.COLUMN_CAR_ENGINE, 2.0);
         values.put(CarContract.CarEntry.COLUMN_CAR_FUEL, CarContract.CarEntry.FUEL_GASOLINE);
+        values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, 0);
+        values.put(CarContract.CarEntry.COLUMN_CAR_PRICE, 100.00);
         values.put(CarContract.CarEntry.COLUMN_CAR_MILEAGE, 100000);
 
         // Insert a new row for Toto into the provider using the ContentResolver.
@@ -144,7 +146,11 @@ public class CatalogActivity extends AppCompatActivity implements
         String[] projection = {
                 CarContract.CarEntry._ID,
                 CarContract.CarEntry.COLUMN_CAR_BRAND,
-                CarContract.CarEntry.COLUMN_CAR_MODEL };
+                CarContract.CarEntry.COLUMN_CAR_MODEL,
+                CarContract.CarEntry.COLUMN_CAR_ENGINE,
+                CarContract.CarEntry.COLUMN_CAR_QUANTITY,
+                CarContract.CarEntry.COLUMN_CAR_PRICE
+        };
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
