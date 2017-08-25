@@ -41,4 +41,18 @@
         <item name="android:paddingTop">16dp</item>
         <item name="android:textAppearance">?android:textAppearanceSmall</item>
     </style>
+
+
+    <!-- Styles for Buttons + and - -->
+
+    <style name="PlusMinusButtonStyle">
+        <item name="android:backgroundTint">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:background">@drawable/button_round</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 </resources>

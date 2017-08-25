@@ -24,6 +24,15 @@
     <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
     <string name="category_measurement">Measurement</string>
 
+    <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
+    <string name="category_quantity">Quantity</string>
+
+    <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
+    <string name="category_image">Add Image Car</string>
+
+    <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
+    <string name="category_store">Store</string>
+
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
     <string name="hint_car_model">Model</string>
 
@@ -31,11 +40,18 @@
     <string name="hint_car_brand">Brand</string>
 
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_car_price">Price</string>
+
+    <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_car_quantity">Quantity</string>
+
+    <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
     <string name="hint_car_mileage">Mileage</string>
 
     <!-- Units for weight of the pet (kilograms) [CHAR LIMIT=5] -->
     <string name="unit_car_mileage">km</string>
     <string name="unit_car_liters">L</string>
+    <string name="unit_car_price">U$</string>
 
     <!-- Label for dropdown menu option if the pet's gender is unknown [CHAR LIMIT=20] -->
     <string name="fuel_gasoline">Gasoline</string>
