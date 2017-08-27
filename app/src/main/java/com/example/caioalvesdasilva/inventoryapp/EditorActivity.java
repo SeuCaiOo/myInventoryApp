@@ -437,7 +437,7 @@ public class EditorActivity extends AppCompatActivity implements
         } else {
             // Check if this is supposed to be a new car
             // and check if all the fields in the editor are blank
-            if (mCurrentCarUri == null || TextUtils.isEmpty(yearString) ||
+            if (mCurrentCarUri == null || TextUtils.isEmpty(imagePath) ||TextUtils.isEmpty(yearString) ||
                     TextUtils.isEmpty(mileageString) || TextUtils.isEmpty(supplierNameString) ||
                     TextUtils.isEmpty(supplierEmailString)) {
                 // if any of the fields are empty le the user know with a Toast message

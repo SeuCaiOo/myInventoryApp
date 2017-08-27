@@ -144,7 +144,7 @@ public class CarCursorAdapter extends CursorAdapter {
                     );
                     context.getContentResolver().notifyChange(currentCarUri, null);
                 } else {
-                    Toast.makeText(context, "Item out of stock", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Car not available", Toast.LENGTH_SHORT).show();
                 }
             }
         });
