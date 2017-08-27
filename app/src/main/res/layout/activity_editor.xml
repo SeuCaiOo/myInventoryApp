@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="4dp">
             <!-- 1 -->
             <LinearLayout
                 android:layout_width="0dp"
@@ -150,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="4dp">
 
                 <!-- Label Image -->
                 <LinearLayout
@@ -218,7 +218,7 @@
 
                         <!-- Quantity field -->
                         <EditText
-                            android:id="@+id/edit_car_quantity"
+                            android:id="@+id/edit_car_email"
                             style="@style/EditorFieldStyle"
                             android:hint="@string/hint_car_quantity"
                             android:layout_width="match_parent"
@@ -258,7 +258,77 @@
                             android:layout_alignParentStart="true" />
                     </RelativeLayout>
                 </LinearLayout>
+
             </LinearLayout>
+
+
+
+            <!-- Supplier Label-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/CategoryStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/category_supplier" />
+
+                <!-- Name Supplier fields -->
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp">
+
+                    <EditText
+                        android:id="@+id/edit_car_quantity"
+                        style="@style/EditorFieldStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_supplier_name"
+                        android:inputType="text"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <!-- Email Supplier fields -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:padding="2dp">
+
+                    <EditText
+                        android:id="@+id/edit_car_supp"
+                        style="@style/EditorFieldStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/label_price_units2"
+                        android:layout_alignBottom="@+id/label_price_units2"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:hint="@string/hint_supplier_email"
+                        android:inputType="textEmailAddress"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <!-- Email Supplier Button -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <Button
+                    android:id="@+id/email_button"
+                    style="@style/emailButton"
+                    android:background="@mipmap/ic_email" />
+
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

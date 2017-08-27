@@ -45,6 +45,15 @@
     <!-- Label for store information in the editor [CHAR LIMIT=30] -->
     <string name="category_store">Store</string>
 
+    <!-- Label for store information in the editor [CHAR LIMIT=30] -->
+    <string name="category_supplier">Supplier</string>
+
+    <!-- Text hint for year field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_supplier_name">Name (*)</string>
+
+    <!-- Text hint for year field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_supplier_email">Email (*)</string>
+
     <!-- Units for mileage of the car (kilometers) [CHAR LIMIT=5] -->
     <string name="unit_car_mileage">Km</string>
     <string name="unit_car_liters">L</string>
