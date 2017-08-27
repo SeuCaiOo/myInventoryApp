@@ -218,7 +218,7 @@
 
                         <!-- Quantity field -->
                         <EditText
-                            android:id="@+id/edit_car_email"
+                            android:id="@+id/edit_car_quantity"
                             style="@style/EditorFieldStyle"
                             android:hint="@string/hint_car_quantity"
                             android:layout_width="match_parent"
@@ -284,7 +284,7 @@
                     android:padding="2dp">
 
                     <EditText
-                        android:id="@+id/edit_car_quantity"
+                        android:id="@+id/edit_supplier_name"
                         style="@style/EditorFieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -301,7 +301,7 @@
                     android:padding="2dp">
 
                     <EditText
-                        android:id="@+id/edit_car_supp"
+                        android:id="@+id/edit_supplier_email"
                         style="@style/EditorFieldStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -314,7 +314,6 @@
                         android:textAlignment="center" />
                 </RelativeLayout>
             </LinearLayout>
-
 
             <!-- Email Supplier Button -->
             <LinearLayout

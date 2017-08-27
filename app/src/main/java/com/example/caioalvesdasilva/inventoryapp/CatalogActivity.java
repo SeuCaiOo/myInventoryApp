@@ -108,6 +108,8 @@ public class CatalogActivity extends AppCompatActivity implements
         values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, 1);
         values.put(CarContract.CarEntry.COLUMN_CAR_PRICE, 5000.00);
         values.put(CarContract.CarEntry.COLUMN_CAR_IMAGE, imgPath);
+        values.put(CarContract.CarEntry.COLUMN_SUPPLIER_NAME, "Caio");
+        values.put(CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL, "caiopimentel8@gmail.com");
         values.put(CarContract.CarEntry.COLUMN_CAR_MILEAGE, 1000);
 
         // Insert a new row for Golf into the provider using the ContentResolver.
@@ -127,7 +129,7 @@ public class CatalogActivity extends AppCompatActivity implements
 
 
     /**
-     * Prompt the user to confirm that they want to delete this record.
+     * Prompt the user to confirm that they want to delete this car.
      */
     private void showDeleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners

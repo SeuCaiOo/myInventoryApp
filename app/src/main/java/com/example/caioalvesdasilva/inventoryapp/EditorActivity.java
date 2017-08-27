@@ -104,6 +104,15 @@ public class EditorActivity extends AppCompatActivity implements
     /** Button to add the car's image*/
     private Button mAddImageButton;
 
+    /**Button to order more cars from the supplier*/
+    private Button mOrder;
+
+    /** EditText field to enter the Car supplier Name*/
+    private EditText mContactNameEditText;
+
+    /** EditText field to enter the Car supplier Email*/
+    private EditText mContactEmailEditText;
+
     /** Fuel of the car. The possible values are:
      * 0 for gasoline fuel, 1 for alcohol, 2 for flex.*/
     private int mFuel = CarContract.CarEntry.FUEL_GASOLINE;
@@ -160,6 +169,9 @@ public class EditorActivity extends AppCompatActivity implements
         mImageView = (ImageView) findViewById(R.id.image_car);
         mMileageEditText = (EditText) findViewById(R.id.edit_car_mileage);
         mFuelSpinner = (Spinner) findViewById(R.id.spinner_fuel);
+        mOrder = (Button) findViewById(R.id.email_button);
+        mContactNameEditText = (EditText) findViewById(R.id.edit_supplier_name);
+        mContactEmailEditText = (EditText) findViewById(R.id.edit_supplier_email);
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
@@ -172,6 +184,9 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
         mFuelSpinner.setOnTouchListener(mTouchListener);
+        mOrder.setOnTouchListener(mTouchListener);
+        mContactNameEditText.setOnTouchListener(mTouchListener);
+        mContactEmailEditText.setOnTouchListener(mTouchListener);
 
         //Open camera when you press on Add image button
         mAddImageButton.setOnClickListener(new View.OnClickListener() {
@@ -198,6 +213,39 @@ public class EditorActivity extends AppCompatActivity implements
             }
 
         });
+
+        //Open the email app to send a message with pre populated fields
+        mOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Invoke an implicit intent to send an email
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+
+                String to = mContactEmailEditText.getText().toString();
+                String modelName = mModelEditText.getText().toString();
+                String brandName = mBrandEditText.getText().toString();
+                String yearModel = mYearEditText.getText().toString();
+                String subject = "Order: " + modelName + " of the " + brandName;
+                String supplier = mContactNameEditText.getText().toString();
+                String sep = System.getProperty("line.separator");
+                String message = "Dear " + supplier + "," + sep +
+                        "I would like to order another 10 cars from the model "
+                        + modelName + " of the " + brandName + " - Year: " +
+                        yearModel + "." + sep + "Greetings," + sep + "Caio";
+                emailIntent.setData(Uri.parse("mailto:" + to));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                emailIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+                try {
+                    startActivity(emailIntent);
+                    finish();
+                    Log.i(LOG_TAG, "Finished sending email...");
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(EditorActivity.this, "There is no email client installed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
         setupSpinner();
     }
 
@@ -205,14 +253,14 @@ public class EditorActivity extends AppCompatActivity implements
     private void setupSpinner() {
         // Create adapter for spinner. The list options are from the String array it will use
         // the spinner will use the default layout
-        ArrayAdapter genderSpinnerAdapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter fuelSpinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.array_fuel_options, android.R.layout.simple_spinner_item);
 
         // Specify dropdown layout style - simple list view with 1 item per line
-        genderSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        fuelSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
         // Apply the adapter to the spinner
-        mFuelSpinner.setAdapter(genderSpinnerAdapter);
+        mFuelSpinner.setAdapter(fuelSpinnerAdapter);
 
         // Set the integer mSelected to the constant values
         mFuelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -375,34 +423,28 @@ public class EditorActivity extends AppCompatActivity implements
         String quantityString = mQuantityEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
         String mileageString = mMileageEditText.getText().toString().trim();
+        String supplierNameString = mContactNameEditText.getText().toString().trim();
+        String supplierEmailString = mContactEmailEditText.getText().toString().trim();
 
-//            // Check if this is supposed to be a new record
-//            // and check if all the fields in the editor are blank
-//            if (TextUtils.isEmpty(imagePath)) {
-//                // if any of the fields are empty le the user know with a Toast message
-//                Toast.makeText(getApplicationContext(), "Image not changed", Toast.LENGTH_LONG).show();
-//            }
-
-
-        if (
-                (!TextUtils.isEmpty(imagePath)) &&
-                (!TextUtils.isEmpty(yearString)) && (!TextUtils.isEmpty(mileageString))
-                ) {
+        if ((!TextUtils.isEmpty(imagePath)) &&
+                (!TextUtils.isEmpty(yearString)) &&
+                (!TextUtils.isEmpty(mileageString)) &&
+                (!TextUtils.isEmpty(supplierNameString)) &&
+                (!TextUtils.isEmpty(supplierEmailString))) {
             // Exit activity only when all the fields have been filled
             finish();
 
         } else {
-            // Check if this is supposed to be a new record
+            // Check if this is supposed to be a new car
             // and check if all the fields in the editor are blank
-            if (mCurrentCarUri == null ||
-                    TextUtils.isEmpty(yearString) || TextUtils.isEmpty(mileageString)) {
+            if (mCurrentCarUri == null || TextUtils.isEmpty(yearString) ||
+                    TextUtils.isEmpty(mileageString) || TextUtils.isEmpty(supplierNameString) ||
+                    TextUtils.isEmpty(supplierEmailString)) {
                 // if any of the fields are empty le the user know with a Toast message
                 Toast.makeText(getApplicationContext(),"Complete all fields with (*)",
                         Toast.LENGTH_LONG).show();
             }
         }
-
-
             //make sure the image uri is not null
             if (mImageUri == null) {
                 return;
@@ -421,6 +463,8 @@ public class EditorActivity extends AppCompatActivity implements
         values.put(CarContract.CarEntry.COLUMN_CAR_PRICE, priceString);
         values.put(CarContract.CarEntry.COLUMN_CAR_FUEL, mFuel);
         values.put(CarContract.CarEntry.COLUMN_CAR_IMAGE, imagePath);
+        values.put(CarContract.CarEntry.COLUMN_SUPPLIER_NAME, supplierNameString);
+        values.put(CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL, supplierEmailString );
 
         // If the quantity is not provided by the user, don't try to parse the string into an
         // integer value. Use 0 by default.
@@ -572,6 +616,8 @@ public class EditorActivity extends AppCompatActivity implements
                 CarContract.CarEntry.COLUMN_CAR_QUANTITY,
                 CarContract.CarEntry.COLUMN_CAR_PRICE,
                 CarContract.CarEntry.COLUMN_CAR_IMAGE,
+                CarContract.CarEntry.COLUMN_SUPPLIER_NAME,
+                CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL,
                 CarContract.CarEntry.COLUMN_CAR_MILEAGE};
 
         // This loader will execute the ContentProvider's query method on a background thread
@@ -612,10 +658,11 @@ public class EditorActivity extends AppCompatActivity implements
             int quantityColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
             int priceColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_PRICE);
             int imageColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_IMAGE);
+            int supplierNameColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_SUPPLIER_NAME);
+            int supplierEmailColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL);
             int mileageColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
 
             // Extract out the value from the Cursor for the given column index
-            final long recordId = cursor.getLong(idColumnIndex);
             String brand = cursor.getString(brandColumnIndex);
             String model = cursor.getString(modelColumnIndex);
             int year = cursor.getInt(yearColumnIndex);
@@ -624,6 +671,8 @@ public class EditorActivity extends AppCompatActivity implements
             int quantity = cursor.getInt(quantityColumnIndex);
             String price = cursor.getString(priceColumnIndex);
             final String image = cursor.getString(imageColumnIndex);
+            String supplierName = cursor.getString(supplierNameColumnIndex);
+            String supplierEmail = cursor.getString(supplierEmailColumnIndex);
             int mileage = cursor.getInt(mileageColumnIndex);
 
             // Update the views on the screen with the values from the database
@@ -635,6 +684,8 @@ public class EditorActivity extends AppCompatActivity implements
             mPriceEditText.setText(price);
             mImageView.setImageBitmap(getBitmapFromUri(Uri.parse(image), mContext, mImageView));
             mImageUri = Uri.parse(image);
+            mContactNameEditText.setText(supplierName);
+            mContactEmailEditText.setText(supplierEmail);
             mMileageEditText.setText(Integer.toString(mileage));
 
             // Fuel is a dropdown spinner, so map the constant value from the database
@@ -664,6 +715,8 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityEditText.setText("");
         mPriceEditText.setText("");
         mMileageEditText.setText("");
+        mContactNameEditText.setText("");
+        mContactEmailEditText.setText("");
         mFuelSpinner.setSelection(0); // Select "gasoline" fuel
     }
 

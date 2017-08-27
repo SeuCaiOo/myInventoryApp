@@ -21,7 +21,7 @@ public class CarDbHelper extends SQLiteOpenHelper {
     /**
      * Database version. If you change the database schema, you must increment the database version.
      */
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     /**
      * Constructs a new instance of {@link CarDbHelper}.
@@ -49,6 +49,8 @@ public class CarDbHelper extends SQLiteOpenHelper {
                 + CarContract.CarEntry.COLUMN_CAR_QUANTITY + " INTEGER NOT NULL, "
                 + CarContract.CarEntry.COLUMN_CAR_PRICE + " TEXT NOT NULL, "
                 + CarContract.CarEntry.COLUMN_CAR_IMAGE + " TEXT NOT NULL, "
+                + CarContract.CarEntry.COLUMN_SUPPLIER_NAME + " TEXT NOT NULL, "
+                + CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL + " TEXT NOT NULL, "
                 + CarContract.CarEntry.COLUMN_CAR_MILEAGE + " INTEGER NOT NULL DEFAULT 0);";
 
         // Execute the SQL statement

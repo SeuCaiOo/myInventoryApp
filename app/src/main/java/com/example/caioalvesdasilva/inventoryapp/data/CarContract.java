@@ -148,6 +148,20 @@ public final class CarContract {
          */
         public final static String COLUMN_CAR_MILEAGE = "mileage";
 
+        /**
+         * Supplier email.
+         * <p>
+         * Type: TEXT
+         */
+        public final static String COLUMN_SUPPLIER_NAME = "supplier_name";
+
+        /**
+         * Supplier email.
+         * <p>
+         * Type: TEXT
+         */
+        public final static String COLUMN_SUPPLIER_EMAIL = "supplier_email";
+
 
         /**
          * Possible values for the fuel of the car.
@@ -160,8 +174,8 @@ public final class CarContract {
          * Returns whether or not the given fuel is {@link #FUEL_ALCOHOL}, {@link #FUEL_GASOLINE},
          * or {@link #FUEL_FLEX}.
          */
-        public static boolean isValidFuel(int gender) {
-            if (gender == FUEL_ALCOHOL || gender == FUEL_GASOLINE || gender == FUEL_FLEX) {
+        public static boolean isValidFuel(int fuel) {
+            if (fuel == FUEL_ALCOHOL || fuel == FUEL_GASOLINE || fuel == FUEL_FLEX) {
                 return true;
             }
             return false;

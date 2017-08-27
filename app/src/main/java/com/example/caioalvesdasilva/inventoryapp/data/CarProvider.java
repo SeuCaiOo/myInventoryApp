@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.IllegalFormatException;
 
@@ -168,9 +169,24 @@ public class CarProvider extends ContentProvider {
         if (price != null && price < 0) {
             throw new IllegalArgumentException("Car requires valid price");
         }
-        // No need to check the breed, any value is valid (including null).
+
+        // Check that the car contact supplier name is not null
+        String supplierName = values.getAsString(CarContract.CarEntry.COLUMN_SUPPLIER_NAME);
+        if (supplierName == null) {
+            throw new IllegalArgumentException("Car requires a supplier contact name");
+        }
+
+
+        // Check that the car contact supplier email is not null
+        String supplierEmail = values.getAsString(CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL);
+        if (supplierEmail == null) {
+            throw new IllegalArgumentException("Car requires a supplier contact email");
+        }
+
+        // No need to check the brand, any value is valid (including null).
         // Get writeable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
 
         // Insert the new cars with the given values
         long id = database.insert(CarContract.CarEntry.TABLE_NAME, null, values);
@@ -233,8 +249,26 @@ public class CarProvider extends ContentProvider {
                 }
             }
 
+            // If the {@link CarEntry#COLUMN_SUPPLIER_NAME} key is present,
+            // Check that the car contact supplier  is not null
+            if (values.containsKey(CarContract.CarEntry.COLUMN_SUPPLIER_NAME)) {
+                String supplierName = values.getAsString(CarContract.CarEntry.COLUMN_SUPPLIER_NAME);
+                if (supplierName == null) {
+                    throw new IllegalArgumentException("Car requires a supplier contact");
+                }
+            }
+
+            // If the {@link CarEntry#COLUMN_SUPPLIER_EMAIL} key is present,
+            // Check that the car contact supplier  is not null
+            if (values.containsKey(CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL)) {
+                String supplierEmail = values.getAsString(CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL);
+                if (supplierEmail == null) {
+                    throw new IllegalArgumentException("Car requires a supplier email");
+                }
+            }
+
             // If the {@link CarEntry#COLUMN_CAR_FUEL} key is present,
-            // check that the gender value is valid.
+            // check that the fuel value is valid.
             if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_FUEL)) {
                 Integer fuel = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_FUEL);
                 if (fuel == null || !CarContract.CarEntry.isValidFuel(fuel)) {
