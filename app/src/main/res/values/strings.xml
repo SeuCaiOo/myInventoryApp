@@ -28,16 +28,19 @@
     <string name="hint_car_quantity">Quantity</string>
 
     <!-- Text hint for mileage field in the editor [CHAR LIMIT=30] -->
-    <string name="hint_car_mileage">Mileage</string>
+    <string name="hint_car_mileage">Mileage (*)</string>
 
     <!-- Text hint for mileage field in the editor [CHAR LIMIT=30] -->
     <string name="hint_car_engine">Engine</string>
+
+    <!-- Text hint for year field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_car_year">Year (*)</string>
 
     <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
     <string name="category_measurement">Measurement</string>
 
     <!-- Label for image information in the editor [CHAR LIMIT=30] -->
-    <string name="category_image">Add Image Car</string>
+    <string name="category_image">Add Image Car (*)</string>
 
     <!-- Label for store information in the editor [CHAR LIMIT=30] -->
     <string name="category_store">Store</string>

@@ -376,12 +376,33 @@ public class EditorActivity extends AppCompatActivity implements
         String priceString = mPriceEditText.getText().toString().trim();
         String mileageString = mMileageEditText.getText().toString().trim();
 
+//            // Check if this is supposed to be a new record
+//            // and check if all the fields in the editor are blank
+//            if (TextUtils.isEmpty(imagePath)) {
+//                // if any of the fields are empty le the user know with a Toast message
+//                Toast.makeText(getApplicationContext(), "Image not changed", Toast.LENGTH_LONG).show();
+//            }
+
+
+        if (
+                (!TextUtils.isEmpty(imagePath)) &&
+                (!TextUtils.isEmpty(yearString)) && (!TextUtils.isEmpty(mileageString))
+                ) {
+            // Exit activity only when all the fields have been filled
+            finish();
+
+        } else {
             // Check if this is supposed to be a new record
             // and check if all the fields in the editor are blank
-            if (TextUtils.isEmpty(imagePath)) {
+            if (mCurrentCarUri == null ||
+                    TextUtils.isEmpty(yearString) || TextUtils.isEmpty(mileageString)) {
                 // if any of the fields are empty le the user know with a Toast message
-                Toast.makeText(getApplicationContext(), "Image not changed", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"Complete all fields with (*)",
+                        Toast.LENGTH_LONG).show();
             }
+        }
+
+
             //make sure the image uri is not null
             if (mImageUri == null) {
                 return;
@@ -401,25 +422,13 @@ public class EditorActivity extends AppCompatActivity implements
         values.put(CarContract.CarEntry.COLUMN_CAR_FUEL, mFuel);
         values.put(CarContract.CarEntry.COLUMN_CAR_IMAGE, imagePath);
 
-        // If the mileage is not provided by the user, don't try to parse the string into an
+        // If the quantity is not provided by the user, don't try to parse the string into an
         // integer value. Use 0 by default.
-        int mileage = 0;
-        if (!TextUtils.isEmpty(mileageString)) {
-            mileage = Integer.parseInt(mileageString);
-        }
-        values.put(CarContract.CarEntry.COLUMN_CAR_MILEAGE, mileage);
-
         int quantity = 0;
         if (!TextUtils.isEmpty(quantityString)) {
             quantity = Integer.parseInt(quantityString);
         }
         values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, quantity);
-
-        int year = 0;
-        if (!TextUtils.isEmpty(yearString)) {
-            year = Integer.parseInt(yearString);
-        }
-        values.put(CarContract.CarEntry.COLUMN_CAR_YEAR, year);
 
 
         // Determine if this is a new or existing pet by checking if mCurrentCarUri is null or not
@@ -489,8 +498,6 @@ public class EditorActivity extends AppCompatActivity implements
             case R.id.action_save:
                 // Save car to database
                 saveCar();
-                // Exit activity
-                finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:

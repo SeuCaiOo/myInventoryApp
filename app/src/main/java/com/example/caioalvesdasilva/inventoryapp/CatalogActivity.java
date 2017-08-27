@@ -112,7 +112,7 @@ public class CatalogActivity extends AppCompatActivity implements
 
         // Insert a new row for Golf into the provider using the ContentResolver.
         // Use the {@link CarEntry#CONTENT_URI} to indicate that we want to insert
-        // into the pets database table.
+        // into the Cars database table.
         // Receive the new content URI that will allow us to access Golf's data in the future.
         getContentResolver().insert(CONTENT_URI, values);
     }
@@ -120,7 +120,7 @@ public class CatalogActivity extends AppCompatActivity implements
     /**
      * Helper method to delete all car in the database.
      */
-    private void deleteAllPets() {
+    private void deleteAllCars() {
         int rowsDeleted = getContentResolver().delete(CONTENT_URI, null, null);
         Log.v("CatalogActivity", rowsDeleted + " rows deleted from car database");
     }
@@ -137,7 +137,7 @@ public class CatalogActivity extends AppCompatActivity implements
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Delete" button, so delete the car.
-                deleteAllPets();
+                deleteAllCars();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * API Contract for the Pets app.
+ * API Contract for the Cars app.
  */
 public final class CarContract {
 
@@ -41,12 +41,12 @@ public final class CarContract {
 
 
     /**
-     * Inner class that defines constant values for the pets database table.
+     * Inner class that defines constant values for the cars database table.
      * Each entry in the table represents a single car.
      */
     public static final class CarEntry implements BaseColumns {
 
-        /** The content URI to access the pet data in the provider */
+        /** The content URI to access the car data in the provider */
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_CARS);
 
         /**

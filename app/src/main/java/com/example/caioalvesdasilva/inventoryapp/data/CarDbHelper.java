@@ -37,7 +37,7 @@ public class CarDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Create a String that contains the SQL statement to create the pets table
+        // Create a String that contains the SQL statement to create the cars table
 
         String SQL_CREATE_CARS_TABLE =  "CREATE TABLE IF NOT EXISTS " + CarContract.CarEntry.TABLE_NAME + " ("
                 + CarContract.CarEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
