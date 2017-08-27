@@ -1,9 +1,11 @@
 package com.example.caioalvesdasilva.inventoryapp;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -27,7 +29,7 @@ import static com.example.caioalvesdasilva.inventoryapp.data.CarContract.CarEntr
 public class CatalogActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    /** Identifier for the pet data loader */
+    /** Identifier for the car data loader */
     private static final int CAR_LOADER = 0;
 
     /** Adapter for the ListView */
@@ -48,15 +50,15 @@ public class CatalogActivity extends AppCompatActivity implements
             }
         });
 
-        // Find the ListView which will be populated with the pet data
+        // Find the ListView which will be populated with the car data
         ListView petListView = (ListView) findViewById(R.id.list);
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
         petListView.setEmptyView(emptyView);
 
-        // Setup an Adapter to create a list item for each row of pet data in the Cursor.
-        // There is no pet data yet (until the loader finishes) so pass in null for the Cursor.
+        // Setup an Adapter to create a list item for each row of car data in the Cursor.
+        // There is no car data yet (until the loader finishes) so pass in null for the Cursor.
         mCursorAdapter = new CarCursorAdapter(this, null);
         petListView.setAdapter(mCursorAdapter);
 
@@ -69,53 +71,88 @@ public class CatalogActivity extends AppCompatActivity implements
 
                 // Form the content URI that represents the specific pet that was clicked on,
                 // by appending the "id" (passed as input to this method) onto the
-                // {@link PetEntry#CONTENT_URI}.
-                // For example, the URI would be "content://com.example.android.pets/pets/2"
-                // if the pet with ID 2 was clicked on.
+                // {@link CarEntry#CONTENT_URI}.
+                // For example, the URI would be
+                // "content://com.example.caioalvesdasilva.inventoryapp/cars/2"
+                // if the car with ID 2 was clicked on.
                 Uri currentPetUri = ContentUris.withAppendedId(CONTENT_URI, id);
 
                 // Set the URI on the data field of the intent
                 intent.setData(currentPetUri);
 
-                // Launch the {@link EditorActivity} to display the data for the current pet.
+                // Launch the {@link EditorActivity} to display the data for the current car.
                 startActivity(intent);
             }
         });
-
-
         // Kick off the loader
         getLoaderManager().initLoader(CAR_LOADER, null, this);
-        }
-
-    /**
-     * Helper method to insert hardcoded pet data into the database. For debugging purposes only.
-     */
-    private void insertPet() {
-        // Create a ContentValues object where column names are the keys,
-        // and Toto's pet attributes are the values.
-        ContentValues values = new ContentValues();
-        values.put(CarContract.CarEntry.COLUMN_CAR_BRAND, "Volkswagen");
-        values.put(CarContract.CarEntry.COLUMN_CAR_MODEL, "Golf");
-        values.put(CarContract.CarEntry.COLUMN_CAR_YEAR, "2002");
-        values.put(CarContract.CarEntry.COLUMN_CAR_ENGINE, 2.0);
-        values.put(CarContract.CarEntry.COLUMN_CAR_FUEL, CarContract.CarEntry.FUEL_GASOLINE);
-        values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, 0);
-        values.put(CarContract.CarEntry.COLUMN_CAR_PRICE, 100.00);
-        values.put(CarContract.CarEntry.COLUMN_CAR_MILEAGE, 100000);
-
-        // Insert a new row for Toto into the provider using the ContentResolver.
-        // Use the {@link PetEntry#CONTENT_URI} to indicate that we want to insert
-        // into the pets database table.
-        // Receive the new content URI that will allow us to access Toto's data in the future.
-        Uri newUri = getContentResolver().insert(CONTENT_URI, values);
     }
 
     /**
-     * Helper method to delete all pets in the database.
+     * Helper method to insert hardcoded car data into the database. For debugging purposes only.
+     */
+    private void insertCar() {
+
+        // Create a ContentValues object where column model are the keys,
+        // and Golf's csr attributes are the values.
+        Uri path = Uri.parse("android.resource://com.example.caioalvesdasilva.inventoryapp/"
+                + R.drawable.img_golf_mk7);
+        String imgPath = path.toString();
+
+        ContentValues values = new ContentValues();
+        values.put(CarContract.CarEntry.COLUMN_CAR_BRAND, "Volkswagen");
+        values.put(CarContract.CarEntry.COLUMN_CAR_MODEL, "Golf Mk7");
+        values.put(CarContract.CarEntry.COLUMN_CAR_YEAR, "2015");
+        values.put(CarContract.CarEntry.COLUMN_CAR_ENGINE, "1.8 TSI");
+        values.put(CarContract.CarEntry.COLUMN_CAR_FUEL, CarContract.CarEntry.FUEL_GASOLINE);
+        values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, 1);
+        values.put(CarContract.CarEntry.COLUMN_CAR_PRICE, 5000.00);
+        values.put(CarContract.CarEntry.COLUMN_CAR_IMAGE, imgPath);
+        values.put(CarContract.CarEntry.COLUMN_CAR_MILEAGE, 1000);
+
+        // Insert a new row for Golf into the provider using the ContentResolver.
+        // Use the {@link CarEntry#CONTENT_URI} to indicate that we want to insert
+        // into the pets database table.
+        // Receive the new content URI that will allow us to access Golf's data in the future.
+        getContentResolver().insert(CONTENT_URI, values);
+    }
+
+    /**
+     * Helper method to delete all car in the database.
      */
     private void deleteAllPets() {
         int rowsDeleted = getContentResolver().delete(CONTENT_URI, null, null);
-        Log.v("CatalogActivity", rowsDeleted + " rows deleted from pet database");
+        Log.v("CatalogActivity", rowsDeleted + " rows deleted from car database");
+    }
+
+
+    /**
+     * Prompt the user to confirm that they want to delete this record.
+     */
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the car.
+                deleteAllPets();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the car.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override
@@ -133,47 +170,16 @@ public class CatalogActivity extends AppCompatActivity implements
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
                 // Do nothing for now
-                insertPet();
+                insertCar();
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
                 // Do nothing for now
-                deleteAllPets();
+                showDeleteConfirmationDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
-    public void onListItemClick(long id) {
-        Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
-
-        Uri currentItemUri = ContentUris.withAppendedId(CONTENT_URI, id);
-        intent.setData(currentItemUri);
-
-        startActivity(intent);
-    }
-
-    public void onSaleButtonClick(long id, int quantity) {
-        Uri currentItemUri = ContentUris.withAppendedId(CONTENT_URI, id);
-
-        int newQuantity = quantity > 0 ? quantity - 1 : 0;
-
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_CAR_QUANTITY, newQuantity);
-
-        int rowsAffected = getContentResolver().update(currentItemUri, values, null, null);
-        if (quantity == newQuantity) {
-            // If no rows were affected, then there was an error with the update.
-
-        } else if (quantity != newQuantity) {
-            // Otherwise, the update was successful and we can display a toast.
-        }
-    }
-
-
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -198,7 +204,7 @@ public class CatalogActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Update {@link PetCursorAdapter} with this new cursor containing updated pet data
+        // Update {@link CarCursorAdapter} with this new cursor containing updated car data
         mCursorAdapter.swapCursor(data);
     }
 

@@ -15,31 +15,25 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-
-        <!-- Overview category -->
+        <!-- Overview -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="10dp">
-
-
-            <!-- Input fields -->
+            <!-- 1 -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:orientation="vertical"
                 android:paddingLeft="4dp">
-
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-                    <!-- Breed field -->
+                    <!-- Brand field -->
                     <EditText
                         android:id="@+id/edit_car_brand"
                         style="@style/EditorFieldStyle"
@@ -50,7 +44,7 @@
                         android:inputType="textCapWords"
                         android:textAlignment="center" />
 
-                    <!-- Name field -->
+                    <!-- Model field -->
                     <EditText
                         android:id="@+id/edit_car_model"
                         style="@style/EditorFieldStyle"
@@ -61,7 +55,6 @@
                         android:inputType="textCapWords"
                         android:textAlignment="center" />
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -84,15 +77,14 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:hint="Engine"
+                        android:hint="@string/hint_car_engine"
                         android:inputType="numberDecimal"
                         android:textAlignment="center" />
-                    <!-- Units for weight (kg) -->
+                    <!-- Units for weight (L) -->
                     <TextView
                         android:id="@+id/label_litres_units"
                         style="@style/EditorUnitsStyle"
                         android:text="@string/unit_car_liters" />
-
 
                     <!-- Input field -->
                     <LinearLayout
@@ -101,18 +93,16 @@
                         android:layout_weight="2"
                         android:orientation="vertical">
 
-                        <!-- Gender drop-down spinner -->
+                        <!-- Fuel drop-down spinner -->
                         <Spinner
                             android:id="@+id/spinner_fuel"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:spinnerMode="dropdown" />
                     </LinearLayout>
-
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
 
         <!-- Measurement category -->
         <LinearLayout
@@ -155,15 +145,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Label -->
-
-
+            <!-- 3 -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
+                <!-- Label Image -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -177,12 +166,11 @@
 
 
                         <Button
-                            android:id="@+id/add_image2"
+                            android:id="@+id/add_image"
                             style="@style/PlusMinusButtonStyle"
                             android:layout_gravity="bottom"
                             android:text="+"
-                            android:layout_marginRight="10dp"
-                            android:textColor="#fff" />
+                            android:layout_marginRight="10dp" />
 
                         <TextView
                             style="@style/CategoryStyle"
@@ -191,11 +179,7 @@
                             android:text="@string/category_image" />
 
                     </LinearLayout>
-
-
-
-
-                    <!-- Input fields -->
+                    <!-- Image fields -->
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
@@ -203,23 +187,16 @@
                         android:padding="8dp">
 
 
-
                         <ImageView
-                            android:id="@+id/edit_image_cover2"
+                            android:id="@+id/image_car"
                             android:layout_alignParentRight="true"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/img_golf_mk7" />
-
+                            android:src="@mipmap/ic_image" />
 
                     </RelativeLayout>
-
-
                 </LinearLayout>
-
-
-
-                <!-- Store -->
+                <!-- Store Label-->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -233,13 +210,13 @@
                         android:gravity="center"
                         android:text="@string/category_store" />
 
-                    <!-- Input fields -->
+                    <!-- Quantity fields -->
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="8dp">
 
-                        <!-- Weight field -->
+                        <!-- Quantity field -->
                         <EditText
                             android:id="@+id/edit_car_quantity"
                             style="@style/EditorFieldStyle"
@@ -249,14 +226,13 @@
                             android:inputType="number"
                             android:textAlignment="center" />
                     </RelativeLayout>
-                    <!-- Input fields -->
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:padding="8dp">
 
-                        <!-- Units for weight (kg) -->
+                        <!-- Units for price (U$) -->
                         <TextView
                             android:id="@+id/label_price_units2"
                             style="@style/EditorUnitsStyle"
@@ -267,7 +243,7 @@
                             android:text="@string/unit_car_price"
                             android:textAlignment="center" />
 
-                        <!-- Weight field -->
+                        <!-- Price field -->
                         <EditText
                             android:id="@+id/edit_car_price"
                             style="@style/EditorFieldStyle"
@@ -281,31 +257,8 @@
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true" />
                     </RelativeLayout>
-
-
                 </LinearLayout>
-
-
             </LinearLayout>
-
-
-
-
-
-
-
         </LinearLayout>
-
-
-
-
-
-
     </LinearLayout>
-
-
-
-
-
-
 </ScrollView>

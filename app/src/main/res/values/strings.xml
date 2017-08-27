@@ -1,86 +1,80 @@
 <resources>
-    <string name="app_name">P10 Inventory App</string>
+    <string name="app_name">P10 - Inventory App</string>
     <!-- Label for overflow menu option that inserts fake pet data into the app [CHAR LIMIT=20] -->
     <string name="action_insert_dummy_data">Insert Dummy Data</string>
 
     <!-- Label for overflow menu option that deletes all pet data in the app [CHAR LIMIT=20] -->
     <string name="action_delete_all_entries">Delete All Cars</string>
 
-    <!-- Title for the activity to add a new pet [CHAR LIMIT=20] -->
+    <!-- Title for the activity to add a new car [CHAR LIMIT=20] -->
     <string name="editor_activity_title_new_car">Add a Car</string>
 
-    <!-- Label for editor menu option to save pet and leave editor [CHAR LIMIT=20] -->
+    <!-- Label for editor menu option to save car and leave editor [CHAR LIMIT=20] -->
     <string name="action_save">Save</string>
 
-    <!-- Label for editor overflow menu option that deletes the current pet [CHAR LIMIT=20] -->
+    <!-- Label for editor overflow menu option that deletes the current car [CHAR LIMIT=20] -->
     <string name="action_delete">Delete</string>
 
-    <!-- Label for overview category of attributes in the editor [CHAR LIMIT=30] -->
-    <string name="category_overview">Overview</string>
+    <!-- Text hint for model field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_car_model">Model</string>
 
-    <!-- Label for gender information in the editor [CHAR LIMIT=30] -->
-    <string name="category_fuel">Fuel Type:</string>
+    <!-- Text hint for brand field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_car_brand">Brand</string>
+
+    <!-- Text hint for price field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_car_price">Price</string>
+
+    <!-- Text hint for quantity field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_car_quantity">Quantity</string>
+
+    <!-- Text hint for mileage field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_car_mileage">Mileage</string>
+
+    <!-- Text hint for mileage field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_car_engine">Engine</string>
 
     <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
     <string name="category_measurement">Measurement</string>
 
-    <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
-    <string name="category_quantity">Quantity</string>
-
-    <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
+    <!-- Label for image information in the editor [CHAR LIMIT=30] -->
     <string name="category_image">Add Image Car</string>
 
-    <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
+    <!-- Label for store information in the editor [CHAR LIMIT=30] -->
     <string name="category_store">Store</string>
 
-    <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
-    <string name="hint_car_model">Model</string>
-
-    <!-- Text hint for breed field in the editor [CHAR LIMIT=30] -->
-    <string name="hint_car_brand">Brand</string>
-
-    <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
-    <string name="hint_car_price">Price</string>
-
-    <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
-    <string name="hint_car_quantity">Quantity</string>
-
-    <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
-    <string name="hint_car_mileage">Mileage</string>
-
-    <!-- Units for weight of the pet (kilograms) [CHAR LIMIT=5] -->
-    <string name="unit_car_mileage">km</string>
+    <!-- Units for mileage of the car (kilometers) [CHAR LIMIT=5] -->
+    <string name="unit_car_mileage">Km</string>
     <string name="unit_car_liters">L</string>
     <string name="unit_car_price">U$</string>
 
-    <!-- Label for dropdown menu option if the pet's gender is unknown [CHAR LIMIT=20] -->
+    <!-- Label for dropdown menu option if the car's fuel is gasoline [CHAR LIMIT=20] -->
     <string name="fuel_gasoline">Gasoline</string>
 
-    <!-- Label for dropdown menu option if the pet is male [CHAR LIMIT=20] -->
+    <!-- Label for dropdown menu option if the car is alcohol [CHAR LIMIT=20] -->
     <string name="fuel_alcohol">Alcohol</string>
 
-    <!-- Label for dropdown menu option if the pet is female [CHAR LIMIT=20] -->
+    <!-- Label for dropdown menu option if the pet is flex [CHAR LIMIT=20] -->
     <string name="fuel_flex">Flex</string>
 
-    <!-- Toast message in editor when new pet has been successfully inserted [CHAR LIMIT=NONE] -->
-    <string name="editor_insert_car_successful">Pet saved</string>
+    <!-- Toast message in editor when new car has been successfully inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_car_successful">Car saved</string>
 
-    <!-- Toast message in editor when new pet has failed to be inserted [CHAR LIMIT=NONE] -->
-    <string name="editor_insert_car_failed">Error with saving pet</string>
+    <!-- Toast message in editor when new car has failed to be inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_car_failed">Error with saving car</string>
 
-    <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
+    <!-- Title text for the empty view, which describes the empty garage image [CHAR LIMIT=50] -->
     <string name="empty_view_title_text">It\'s a bit lonely here...</string>
 
-    <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
+    <!-- Subtitle text for the empty view that prompts the user to add a car [CHAR LIMIT=50] -->
     <string name="empty_view_subtitle_text">Get started by adding a car</string>
 
-    <!-- Title for the activity to edit an existing pet [CHAR LIMIT=20] -->
+    <!-- Title for the activity to edit an existing car [CHAR LIMIT=20] -->
     <string name="editor_activity_title_edit_car">Edit Car</string>
 
-    <!-- Toast message in editor when current pet was successfully updated [CHAR LIMIT=NONE] -->
+    <!-- Toast message in editor when current car was successfully updated [CHAR LIMIT=NONE] -->
     <string name="editor_update_car_successful">Car updated</string>
 
-    <!-- Toast message in editor when current pet has failed to be updated [CHAR LIMIT=NONE] -->
+    <!-- Toast message in editor when current car has failed to be updated [CHAR LIMIT=NONE] -->
     <string name="editor_update_car_failed">Error with updating car</string>
 
     <!-- Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->
@@ -89,36 +83,34 @@
     <!-- Dialog button text for the option to discard a user's changes [CHAR LIMIT=20] -->
     <string name="discard">Discard</string>
 
-    <!-- Dialog button text for the option to keep editing the current pet [CHAR LIMIT=20] -->
+    <!-- Dialog button text for the option to keep editing the current car [CHAR LIMIT=20] -->
     <string name="keep_editing">Keep Editing</string>
 
-    <!-- Toast message in editor when current pet was successfully deleted [CHAR LIMIT=NONE] -->
+    <!-- Toast message in editor when current car was successfully deleted [CHAR LIMIT=NONE] -->
     <string name="editor_delete_car_successful">Car deleted</string>
 
-    <!-- Toast message in editor when current pet has failed to be deleted [CHAR LIMIT=NONE] -->
+    <!-- Toast message in editor when current car has failed to be deleted [CHAR LIMIT=NONE] -->
     <string name="editor_delete_car_failed">Error with deleting car</string>
 
-    <!-- Dialog message to ask the user to confirm deleting the current pet [CHAR LIMIT=NONE] -->
-    <string name="delete_dialog_msg">Delete this car?</string>
+    <!-- Dialog message to ask the user to confirm deleting the current car [CHAR LIMIT=NONE] -->
+    <string name="delete_dialog_msg">Delete all cars?</string>
 
-    <!-- Dialog button text for the option to confirm deleting the current pet [CHAR LIMIT=20] -->
+    <!-- Dialog button text for the option to confirm deleting the current car [CHAR LIMIT=20] -->
     <string name="delete">Delete</string>
 
-    <!-- Dialog button text for the option to cancel deletion of the current pet [CHAR LIMIT=20] -->
+    <!-- Dialog button text for the option to cancel deletion of the current car [CHAR LIMIT=20] -->
     <string name="cancel">Cancel</string>
 
-    <!-- Label for the pet's breed if the breed is unknown [CHAR LIMIT=20] -->
+    <!-- Label for the car's brand if the brand is unknown [CHAR LIMIT=20] -->
     <string name="unknown_brand">Unknown brand</string>
 
-    <!-- Label for the pet's breed if the breed is unknown [CHAR LIMIT=20] -->
+    <!-- Label for the car's mode if the model is unknown [CHAR LIMIT=20] -->
     <string name="unknown_model">Unknown model</string>
 
-    <!-- Label for the pet's breed if the breed is unknown [CHAR LIMIT=20] -->
+    <!-- Label for the car's engine if the engine is 1.0 [CHAR LIMIT=20] -->
     <string name="unknown_engine">1.0</string>
 
-    <!-- Label for the pet's breed if the breed is unknown [CHAR LIMIT=20] -->
-    <string name="unknown_price">Free</string>
-
-
+    <!-- Label for the car's price if the price is 0.00 [CHAR LIMIT=20] -->
+    <string name="unknown_price">0.00</string>
 
 </resources>

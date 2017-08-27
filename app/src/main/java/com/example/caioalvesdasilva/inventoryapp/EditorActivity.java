@@ -7,86 +7,112 @@ package com.example.caioalvesdasilva.inventoryapp;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.example.caioalvesdasilva.inventoryapp.data.CarContract;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
- * Allows user to create a new pet or edit an existing one.
+ * Allows user to create a new car or edit an existing one.
  */
 public class EditorActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    /**
-     * Identifier for the pet data loader
-     */
+   public static final String LOG_TAG = EditorActivity.class.getSimpleName();
+
+    /** Identifier for the car image data loader*/
+    public static final int IMAGE_GALLERY_REQUEST = 20;
+
+    /** Identifier for the car image URI loader*/
+    private static final String STATE_IMAGE_URI = "STATE_IMAGE_URI";
+
+    /** Identifier for the car data loader*/
     private static final int EXISTING_CAR_LOADER = 0;
 
-    /**
-     * Content URI for the existing pet (null if it's a new pet)
-     */
+    final Context mContext = this;
+
+    /** Content URI for the existing car image(null if it's a new car)*/
+    private Uri mImageUri;
+
+    /** Image Path of the car fetched from the Uri*/
+    private String imagePath;
+
+    /** Bitmap value of the image fetched from the Uri */
+    private Bitmap image;
+
+    /** Content URI for the existing car (null if it's a new pet)*/
     private Uri mCurrentCarUri;
 
-    /**
-     * EditText field to enter the pet's name
-     */
+    /** EditText field to enter the car's brand */
     private EditText mBrandEditText;
 
-    /**
-     * EditText field to enter the pet's breed
-     */
+    /** EditText field to enter the car's model*/
     private EditText mModelEditText;
 
+    /** EditText field to enter the car's year*/
     private EditText mYearEditText;
 
+    /** EditText field to enter the car's engine*/
     private EditText mEngineEditText;
 
-    private EditText mQuatityEditText;
+    /** EditText field to enter the car's quantity*/
+    private EditText mQuantityEditText;
 
+    /** EditText field to enter the car's price*/
     private EditText mPriceEditText;
 
-    /**
-     * EditText field to enter the pet's weight
-     */
+    /** ImageView field to enter the car's image*/
+    private ImageView mImageView;
+
+    /** EditText field to enter the car's mileage*/
     private EditText mMileageEditText;
 
-    /**
-     * EditText field to enter the pet's gender
-     */
+    /** Spinner field to enter the car's fuel*/
     private Spinner mFuelSpinner;
 
-    /**
-     * Gender of the pet. The possible values are:
-     * 0 for unknown gender, 1 for male, 2 for female.
-     */
+    /** Button to add the car's image*/
+    private Button mAddImageButton;
+
+    /** Fuel of the car. The possible values are:
+     * 0 for gasoline fuel, 1 for alcohol, 2 for flex.*/
     private int mFuel = CarContract.CarEntry.FUEL_GASOLINE;
 
-    /**
-     * Boolean flag that keeps track of whether the pet has been edited (true) or not (false)
-     */
+    /** Boolean flag that keeps track of whether the car has been edited (true) or not (false)*/
     private boolean mCarHasChanged = false;
 
-    /**
-     * OnTouchListener that listens for any user touches on a View, implying that they are modifying
-     * the view, and we change the mPetHasChanged boolean to true.
-     */
+    /** OnTouchListener that listens for any user touches on a View, implying that they are modifying
+     * the view, and we change the mCarHasChanged boolean to true.*/
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -106,18 +132,18 @@ public class EditorActivity extends AppCompatActivity implements
         mCurrentCarUri = intent.getData();
 
         // If the intent DOES NOT contain a pet content URI, then we know that we are
-        // creating a new pet.
+        // creating a new car.
         if (mCurrentCarUri == null) {
-            // This is a new pet, so change the app bar to say "Add a Pet"
+            // This is a new car, so change the app bar to say "Add a Car"
             setTitle(getString(R.string.editor_activity_title_new_car));
             // Invalidate the options menu, so the "Delete" menu option can be hidden.
-            // (It doesn't make sense to delete a pet that hasn't been created yet.)
+            // (It doesn't make sense to delete a car that hasn't been created yet.)
             invalidateOptionsMenu();
         } else {
-            // Otherwise this is an existing pet, so change app bar to say "Edit Pet"
+            // Otherwise this is an existing car, so change app bar to say "Edit Car"
             setTitle(getString(R.string.editor_activity_title_edit_car));
 
-            // Initialize a loader to read the pet data from the database
+            // Initialize a loader to read the car data from the database
             // and display the current values in the editor
             getLoaderManager().initLoader(EXISTING_CAR_LOADER, null, this);
         }
@@ -128,9 +154,10 @@ public class EditorActivity extends AppCompatActivity implements
         mModelEditText = (EditText) findViewById(R.id.edit_car_model);
         mYearEditText = (EditText) findViewById(R.id.edit_car_year);
         mEngineEditText = (EditText) findViewById(R.id.edit_car_engine);
-        mQuatityEditText = (EditText) findViewById(R.id.edit_car_quantity);
+        mQuantityEditText = (EditText) findViewById(R.id.edit_car_quantity);
         mPriceEditText = (EditText) findViewById(R.id.edit_car_price);
-
+        mAddImageButton = (Button) findViewById(R.id.add_image);
+        mImageView = (ImageView) findViewById(R.id.image_car);
         mMileageEditText = (EditText) findViewById(R.id.edit_car_mileage);
         mFuelSpinner = (Spinner) findViewById(R.id.spinner_fuel);
 
@@ -142,16 +169,39 @@ public class EditorActivity extends AppCompatActivity implements
         mYearEditText.setOnTouchListener(mTouchListener);
         mEngineEditText.setOnTouchListener(mTouchListener);
         mMileageEditText.setOnTouchListener(mTouchListener);
-        mQuatityEditText.setOnTouchListener(mTouchListener);
+        mQuantityEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
         mFuelSpinner.setOnTouchListener(mTouchListener);
 
+        //Open camera when you press on Add image button
+        mAddImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Invoke an implicit intent to open the photo gallery
+                Intent openPhotoGallery = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+                //Where do we find the data?
+                File pictureDirectory = Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES);
+
+                //Get a String of the pictureDirectoryPath
+                String pictureDirectoryPath = pictureDirectory.getPath();
+
+                //Get the Uri representation
+                Uri data = Uri.parse(pictureDirectoryPath);
+
+                //Set the data and type
+                openPhotoGallery.setDataAndType(data, "image/*");
+
+                //We will invoke this activity and get something back from it
+                startActivityForResult(openPhotoGallery, IMAGE_GALLERY_REQUEST);
+            }
+
+        });
         setupSpinner();
     }
 
-    /**
-     * Setup the dropdown spinner that allows the user to select the gender of the pet.
-     */
+    /** Setup the dropdown spinner that allows the user to select the fuel of the car.*/
     private void setupSpinner() {
         // Create adapter for spinner. The list options are from the String array it will use
         // the spinner will use the default layout
@@ -171,11 +221,11 @@ public class EditorActivity extends AppCompatActivity implements
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.fuel_alcohol))) {
-                        mFuel = 1; // Male
+                        mFuel = 1; // Alcohol
                     } else if (selection.equals(getString(R.string.fuel_flex))) {
-                        mFuel = 2; // Female
+                        mFuel = 2; // Flex
                     } else {
-                        mFuel = 0; // Unknown
+                        mFuel = 0; // Gasoline
                     }
                 }
             }
@@ -183,35 +233,163 @@ public class EditorActivity extends AppCompatActivity implements
             // Because AdapterView is an abstract class, onNothingSelected must be defined
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mFuel = 0; // Unknown
+                mFuel = 0; // Gasoline
             }
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (mImageUri != null)
+            outState.putString(STATE_IMAGE_URI, mImageUri.toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState.containsKey(STATE_IMAGE_URI) &&
+                !savedInstanceState.getString(STATE_IMAGE_URI).equals("")) {
+            mImageUri = Uri.parse(savedInstanceState.getString(STATE_IMAGE_URI));
+
+            ViewTreeObserver viewTreeObserver = mImageView.getViewTreeObserver();
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    mImageView.setImageBitmap(getBitmapFromUri(mImageUri, mContext, mImageView));
+                }
+            });
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        //if we are here our request was successful
+        if (requestCode == IMAGE_GALLERY_REQUEST && (resultCode == RESULT_OK)) {
+            try {
+                //this is the address of the image on the sd cards
+                mImageUri = data.getData();
+                int takeFlags = data.getFlags();
+                takeFlags &= (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                imagePath = mImageUri.toString();
+                //Declare a stream to read the data from the card
+                InputStream inputStream;
+                //We are getting an input stream based on the Uri of the image
+                inputStream = getContentResolver().openInputStream(mImageUri);
+                //Get a bitmap from the stream
+                image = BitmapFactory.decodeStream(inputStream);
+                //Show the image to the user
+                mImageView.setImageBitmap(image);
+                imagePath = mImageUri.toString();
+                try {
+                    getContentResolver().takePersistableUriPermission(mImageUri, takeFlags);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+                mImageView.setImageBitmap(getBitmapFromUri(mImageUri, mContext, mImageView));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                //Show the user a Toast mewssage that the Image is not available
+                Toast.makeText(EditorActivity.this, "Unable to open image", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    /** Method to add clear top flag so it doesn't create new instance of parent
+     *
+     * @return intent*/
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        Intent intent = super.getSupportParentActivityIntent();
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        return intent;
+    }
+
+    public Bitmap getBitmapFromUri(Uri uri, Context context, ImageView imageView) {
+
+        if (uri == null || uri.toString().isEmpty())
+            return null;
+
+        // Get the dimensions of the View
+        int targetW = imageView.getWidth();
+        int targetH = imageView.getHeight();
+
+        InputStream input = null;
+        try {
+            input = this.getContentResolver().openInputStream(uri);
+
+            // Get the dimensions of the bitmap
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(input, null, bmOptions);
+            input.close();
+
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+
+            // Determine how much to scale down the image
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+
+            // Decode the image file into a Bitmap sized to fill the View
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inPurgeable = true;
+
+            input = this.getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(input, null, bmOptions);
+            input.close();
+            return bitmap;
+
+        } catch (FileNotFoundException fne) {
+            Log.e(LOG_TAG, "Failed to load image.", fne);
+            return null;
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to load image.", e);
+            return null;
+        } finally {
+            try {
+                input.close();
+            } catch (IOException ioe) {
+
+            }
+        }
+    }
+
     /**
-     * Get user input from editor and save pet into database.
+     * Get user input from editor and save car into database.
      */
-    private void savePet() {
+    private void saveCar() {
         // Read from input fields
         // Use trim to eliminate leading or trailing white space
         String brandString = mBrandEditText.getText().toString().trim();
         String modelString = mModelEditText.getText().toString().trim();
         String yearString = mYearEditText.getText().toString().trim();
         String engineString = mEngineEditText.getText().toString().trim();
-        String quantityString = mQuatityEditText.getText().toString().trim();
+        String quantityString = mQuantityEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
         String mileageString = mMileageEditText.getText().toString().trim();
 
-
-        // Check if this is supposed to be a new pet
-        // and check if all the fields in the editor are blank
-        if (mCurrentCarUri == null &&
-                TextUtils.isEmpty(brandString) && TextUtils.isEmpty(modelString) &&
-                TextUtils.isEmpty(mileageString) && mFuel == CarContract.CarEntry.FUEL_GASOLINE) {
-            // Since no fields were modified, we can return early without creating a new pet.
-            // No need to create ContentValues and no need to do any ContentProvider operations.
-            return;
+            // Check if this is supposed to be a new record
+            // and check if all the fields in the editor are blank
+            if (TextUtils.isEmpty(imagePath)) {
+                // if any of the fields are empty le the user know with a Toast message
+                Toast.makeText(getApplicationContext(), "Image not changed", Toast.LENGTH_LONG).show();
+            }
+            //make sure the image uri is not null
+            if (mImageUri == null) {
+                return;
         }
+
+        // Get the imagePath
+        imagePath = mImageUri.toString();
+        Log.i(LOG_TAG, "TEST: Album Cover string is: " + imagePath);
 
         // Create a ContentValues object where column names are the keys,
         // and pet attributes from the editor are the values.
@@ -221,7 +399,9 @@ public class EditorActivity extends AppCompatActivity implements
         values.put(CarContract.CarEntry.COLUMN_CAR_ENGINE, engineString);
         values.put(CarContract.CarEntry.COLUMN_CAR_PRICE, priceString);
         values.put(CarContract.CarEntry.COLUMN_CAR_FUEL, mFuel);
-        // If the weight is not provided by the user, don't try to parse the string into an
+        values.put(CarContract.CarEntry.COLUMN_CAR_IMAGE, imagePath);
+
+        // If the mileage is not provided by the user, don't try to parse the string into an
         // integer value. Use 0 by default.
         int mileage = 0;
         if (!TextUtils.isEmpty(mileageString)) {
@@ -237,15 +417,15 @@ public class EditorActivity extends AppCompatActivity implements
 
         int year = 0;
         if (!TextUtils.isEmpty(yearString)) {
-            year = Integer.parseInt(quantityString);
+            year = Integer.parseInt(yearString);
         }
         values.put(CarContract.CarEntry.COLUMN_CAR_YEAR, year);
 
 
-        // Determine if this is a new or existing pet by checking if mCurrentPetUri is null or not
+        // Determine if this is a new or existing pet by checking if mCurrentCarUri is null or not
         if (mCurrentCarUri == null) {
-            // This is a NEW pet, so insert a new pet into the provider,
-            // returning the content URI for the new pet.
+            // This is a NEW car, so insert a new car into the provider,
+            // returning the content URI for the new car.
             Uri newUri = getContentResolver().insert(CarContract.CarEntry.CONTENT_URI, values);
 
             // Show a toast message depending on whether or not the insertion was successful.
@@ -259,9 +439,9 @@ public class EditorActivity extends AppCompatActivity implements
                         Toast.LENGTH_SHORT).show();
             }
         } else {
-            // Otherwise this is an EXISTING pet, so update the pet with content URI: mCurrentPetUri
+            // Otherwise this is an EXISTING car, so update the pet with content URI: mCurrentCarUri
             // and pass in the new ContentValues. Pass in null for the selection and selection args
-            // because mCurrentPetUri will already identify the correct row in the database that
+            // because mCurrentCarUri will already identify the correct row in the database that
             // we want to modify.
             int rowsAffected = getContentResolver().update(mCurrentCarUri, values, null, null);
 
@@ -293,7 +473,7 @@ public class EditorActivity extends AppCompatActivity implements
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        // If this is a new pet, hide the "Delete" menu item.
+        // If this is a new car, hide the "Delete" menu item.
         if (mCurrentCarUri == null) {
             MenuItem menuItem = menu.findItem(R.id.action_delete);
             menuItem.setVisible(false);
@@ -307,9 +487,8 @@ public class EditorActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                // Do nothing for now
-                // Save pet to database
-                savePet();
+                // Save car to database
+                saveCar();
                 // Exit activity
                 finish();
                 return true;
@@ -374,7 +553,7 @@ public class EditorActivity extends AppCompatActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        // Since the editor shows all pet attributes, define a projection that contains
+        // Since the editor shows all car attributes, define a projection that contains
         // all columns from the pet table
         String[] projection = {
                 CarContract.CarEntry._ID,
@@ -385,6 +564,7 @@ public class EditorActivity extends AppCompatActivity implements
                 CarContract.CarEntry.COLUMN_CAR_FUEL,
                 CarContract.CarEntry.COLUMN_CAR_QUANTITY,
                 CarContract.CarEntry.COLUMN_CAR_PRICE,
+                CarContract.CarEntry.COLUMN_CAR_IMAGE,
                 CarContract.CarEntry.COLUMN_CAR_MILEAGE};
 
         // This loader will execute the ContentProvider's query method on a background thread
@@ -403,10 +583,20 @@ public class EditorActivity extends AppCompatActivity implements
             return;
         }
 
+        ViewTreeObserver viewTreeObserver = mImageView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                mImageView.setImageBitmap(getBitmapFromUri(mImageUri, mContext, mImageView));
+            }
+        });
+
         // Proceed with moving to the first row of the cursor and reading data from it
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst()) {
-            // Find the columns of pet attributes that we're interested in
+            // Find the columns of car attributes that we're interested in
+            int idColumnIndex = cursor.getColumnIndex(CarContract.CarEntry._ID);
             int brandColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_BRAND);
             int modelColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MODEL);
             int yearColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_YEAR);
@@ -414,10 +604,11 @@ public class EditorActivity extends AppCompatActivity implements
             int fuelColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_FUEL);
             int quantityColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
             int priceColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_PRICE);
-
+            int imageColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_IMAGE);
             int mileageColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
 
             // Extract out the value from the Cursor for the given column index
+            final long recordId = cursor.getLong(idColumnIndex);
             String brand = cursor.getString(brandColumnIndex);
             String model = cursor.getString(modelColumnIndex);
             int year = cursor.getInt(yearColumnIndex);
@@ -425,6 +616,7 @@ public class EditorActivity extends AppCompatActivity implements
             int fuel = cursor.getInt(fuelColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
             String price = cursor.getString(priceColumnIndex);
+            final String image = cursor.getString(imageColumnIndex);
             int mileage = cursor.getInt(mileageColumnIndex);
 
             // Update the views on the screen with the values from the database
@@ -432,12 +624,14 @@ public class EditorActivity extends AppCompatActivity implements
             mModelEditText.setText(model);
             mYearEditText.setText(Integer.toString(year));
             mEngineEditText.setText(engine);
-            mQuatityEditText.setText(Integer.toString(quantity));
+            mQuantityEditText.setText(Integer.toString(quantity));
             mPriceEditText.setText(price);
+            mImageView.setImageBitmap(getBitmapFromUri(Uri.parse(image), mContext, mImageView));
+            mImageUri = Uri.parse(image);
             mMileageEditText.setText(Integer.toString(mileage));
 
-            // Gender is a dropdown spinner, so map the constant value from the database
-            // into one of the dropdown options (0 is Unknown, 1 is Male, 2 is Female).
+            // Fuel is a dropdown spinner, so map the constant value from the database
+            // into one of the dropdown options (0 is Gasoline, 1 is Alcohol, 2 is Flex).
             // Then call setSelection() so that option is displayed on screen as the current selection.
             switch (fuel) {
                 case CarContract.CarEntry.FUEL_ALCOHOL:
@@ -460,7 +654,7 @@ public class EditorActivity extends AppCompatActivity implements
         mModelEditText.setText("");
         mYearEditText.setText("");
         mEngineEditText.setText("");
-        mQuatityEditText.setText("");
+        mQuantityEditText.setText("");
         mPriceEditText.setText("");
         mMileageEditText.setText("");
         mFuelSpinner.setSelection(0); // Select "gasoline" fuel
@@ -483,7 +677,7 @@ public class EditorActivity extends AppCompatActivity implements
         builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Keep editing" button, so dismiss the dialog
-                // and continue editing the pet.
+                // and continue editing the car.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -496,7 +690,7 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
     /**
-     * Prompt the user to confirm that they want to delete this pet.
+     * Prompt the user to confirm that they want to delete this car.
      */
     private void showDeleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners
@@ -505,14 +699,14 @@ public class EditorActivity extends AppCompatActivity implements
         builder.setMessage(R.string.delete_dialog_msg);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the pet.
-                deletePet();
+                // User clicked the "Delete" button, so delete the car.
+                deleteCar();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the pet.
+                // and continue editing the car.
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -525,14 +719,14 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
     /**
-     * Perform the deletion of the pet in the database.
+     * Perform the deletion of the car in the database.
      */
-    private void deletePet() {
-        // Only perform the delete if this is an existing pet.
+    private void deleteCar() {
+        // Only perform the delete if this is an existing car.
         if (mCurrentCarUri != null) {
-            // Call the ContentResolver to delete the pet at the given content URI.
-            // Pass in null for the selection and selection args because the mCurrentPetUri
-            // content URI already identifies the pet that we want.
+            // Call the ContentResolver to delete the car at the given content URI.
+            // Pass in null for the selection and selection args because the mCurrentCarUri
+            // content URI already identifies the car that we want.
             int rowsDeleted = getContentResolver().delete(mCurrentCarUri, null, null);
 
             // Show a toast message depending on whether or not the delete was successful.

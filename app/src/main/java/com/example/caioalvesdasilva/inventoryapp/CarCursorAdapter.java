@@ -30,7 +30,7 @@ import static android.content.ContentValues.TAG;
 /**
  * {@link CarCursorAdapter} is an adapter for a list or grid view
  * that uses a {@link Cursor} of pet data as its data source. This adapter knows
- * how to create list items for each row of pet data in the {@link Cursor}.
+ * how to create list items for each row of car data in the {@link Cursor}.
  */
 public class CarCursorAdapter extends CursorAdapter {
 
@@ -60,8 +60,8 @@ public class CarCursorAdapter extends CursorAdapter {
     }
 
     /**
-     * This method binds the pet data (in the current row pointed to by cursor) to the given
-     * list item layout. For example, the name for the current pet can be set on the name TextView
+     * This method binds the car data (in the current row pointed to by cursor) to the given
+     * list item layout. For example, the model for the current car can be set on the model TextView
      * in the list item layout.
      *
      * @param view    Existing view, returned earlier by newView() method
@@ -79,64 +79,53 @@ public class CarCursorAdapter extends CursorAdapter {
         TextView priceView = (TextView) view.findViewById(R.id.carPrice);
         ImageView sellView = (ImageView) view.findViewById(R.id.carSell);
 
-        // Find the columns of pet attributes that we're interested in
+        // Find the columns of car attributes that we're interested in
         int brandColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_BRAND);
         int modelColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MODEL);
         int quantityColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
         int engineColumnIndex= cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_ENGINE);
         int priceColumnsIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_PRICE);
 
-        // Read the pet attributes from the Cursor for the current pet
+        // Read the car attributes from the Cursor for the current car
         String carBrand = cursor.getString(brandColumnIndex);
         String carModel = cursor.getString(modelColumnIndex);
         String carQuantity = cursor.getString(quantityColumnIndex);
         String carEngine = cursor.getString (engineColumnIndex);
-        String carPrice = cursor.getString(priceColumnsIndex);
+        String carPrice = "U$: " + cursor.getString(priceColumnsIndex);
         final int quantityCar = cursor.getInt(quantityColumnIndex);
-
         int carId = cursor.getInt(cursor.getColumnIndex(CarContract.CarEntry._ID));
-
         final Uri currentCarUri = ContentUris.withAppendedId(CarContract.CarEntry.CONTENT_URI, carId);
 
-
-
-        // If the pet breed is empty string or null, then use some default text
+        // If the car brand is empty string or null, then use some default text
         // that says "Unknown brand", so the TextView isn't blank.
         if (TextUtils.isEmpty(carBrand)) {
             carBrand = context.getString(R.string.unknown_brand);
         }
 
-        // If the pet breed is empty string or null, then use some default text
+        // If the car model is empty string or null, then use some default text
         // that says "Unknown model", so the TextView isn't blank.
         if (TextUtils.isEmpty(carModel)) {
             carModel = context.getString(R.string.unknown_model);
         }
 
-
-        // If the pet breed is empty string or null, then use some default text
-        // that says "Unknown breed", so the TextView isn't blank.
+        // If the car engine is empty string or null, then use some default text
+        // that says "1.0", so the TextView isn't blank.
         if (TextUtils.isEmpty(carEngine)) {
             carEngine = context.getString(R.string.unknown_engine);
         }
-        // If the pet breed is empty string or null, then use some default text
-        // that says "Unknown breed", so the TextView isn't blank.
+        // If the car price is empty string or null, then use some default text
+        // that says "0.00", so the TextView isn't blank.
         if (TextUtils.isEmpty(carPrice)) {
             carPrice = context.getString(R.string.unknown_price);
         }
 
-        // Update the TextViews with the attributes for the current pet
+        // Update the TextViews with the attributes for the current car
         brandTextView.setText(carBrand);
         modelTextView.setText(carModel);
         quantityView.setText(carQuantity);
         engineView.setText(carEngine);
         priceView.setText(carPrice);
-
-
-
         final int currentCarQuantity = cursor.getInt(quantityColumnIndex);
-        final Long id = cursor.getLong(cursor.getColumnIndex(CarContract.CarEntry._ID));
-
-
 
         sellView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,8 +147,6 @@ public class CarCursorAdapter extends CursorAdapter {
                     Toast.makeText(context, "Item out of stock", Toast.LENGTH_SHORT).show();
                 }
             }
-
-
         });
 
     }

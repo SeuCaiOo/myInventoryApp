@@ -24,17 +24,15 @@ public class CarProvider extends ContentProvider {
     /** Tag for the log messages */
     public static final String LOG_TAG = CarProvider.class.getSimpleName();
 
-    /** URI matcher code for the content URI for the pets table */
+    /** URI matcher code for the content URI for the cars table */
     private static final int CARS = 100;
 
-    /** URI matcher code for the content URI for a single pet in the pets table */
+    /** URI matcher code for the content URI for a single car in the cars table */
     private static final int CAR_ID = 101;
 
-    /**
-     * UriMatcher object to match a content URI to a corresponding code.
+    /** UriMatcher object to match a content URI to a corresponding code.
      * The input passed into the constructor represents the code to return for the root URI.
-     * It's common to use NO_MATCH as the input for this case.
-     */
+     * It's common to use NO_MATCH as the input for this case.*/
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     // Static initializer. This is run the first time anything is called from this class.
@@ -43,18 +41,21 @@ public class CarProvider extends ContentProvider {
         // should recognize. All paths added to the UriMatcher have a corresponding code to return
         // when a match is found.
 
-        // The content URI of the form "content://com.example.android.pets/pets" will map to the
-        // integer code {@link #PETS}. This URI is used to provide access to MULTIPLE rows
-        // of the pets table.
+        // The content URI of the form
+        // "content://com.example.caioalvesdasilva.inventoryapp/cars" will map to the
+        // integer code {@link #CARS}. This URI is used to provide access to MULTIPLE rows
+        // of the cars table.
         sUriMatcher.addURI(CarContract.CONTENT_AUTHORITY, CarContract.PATH_CARS, CARS);
 
-        // The content URI of the form "content://com.example.android.pets/pets/#" will map to the
-        // integer code {@link #PET_ID}. This URI is used to provide access to ONE single row
+        // The content URI of the form
+        // "content://com.example.caioalvesdasilva.inventoryapp/cars/#" will map to the
+        // integer code {@link #CAR_ID}. This URI is used to provide access to ONE single row
         // of the pets table.
         //
         // In this case, the "#" wildcard is used where "#" can be substituted for an integer.
-        // For example, "content://com.example.android.pets/pets/3" matches, but
-        // "content://com.example.android.pets/pets" (without a number at the end) doesn't match.
+        // For example, "content://com.example.caioalvesdasilva.inventoryapp/cars/3" matches, but
+        // "content://com.example.caioalvesdasilva.inventoryapp/cars"
+        // (without a number at the end) doesn't match.
         sUriMatcher.addURI(CarContract.CONTENT_AUTHORITY, CarContract.PATH_CARS + "/#", CAR_ID);
     }
 
@@ -80,15 +81,16 @@ public class CarProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case CARS:
-                // For the PETS code, query the pets table directly with the given
+                // For the CARS code, query the pets table directly with the given
                 // projection, selection, selection arguments, and sort order. The cursor
                 // could contain multiple rows of the pets table.
                 cursor = database.query(CarContract.CarEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                     break;
             case CAR_ID:
-                // For the PET_ID code, extract out the ID from the URI.
-                // For an example URI such as "content://com.example.android.pets/pets/3",
+                // For the CAR_ID code, extract out the ID from the URI.
+                // For an example URI such as
+                // "content://com.example.caioalvesdasilva.inventoryapp/cars/3",
                 // the selection will be "_id=?" and the selection argument will be a
                 // String array containing the actual ID of 3 in this case.
                 //
@@ -100,8 +102,8 @@ public class CarProvider extends ContentProvider {
 
                 // This will perform a query on the pets table where the _id equals 3 to return a
                 // Cursor containing that row of the table.
-                cursor = database.query(CarContract.CarEntry.TABLE_NAME, projection, selection, selectionArgs,
-                        null, null, sortOrder);
+                cursor = database.query(CarContract.CarEntry.TABLE_NAME, projection, selection,
+                        selectionArgs, null, null, sortOrder);
                 break;
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
@@ -131,49 +133,46 @@ public class CarProvider extends ContentProvider {
      * for that specific row in the database.
      */
     private Uri insertPet(Uri uri, ContentValues values) {
-        // Check that the name is not null
+        // Check that the brand is not null
         String brand = values.getAsString(CarContract.CarEntry.COLUMN_CAR_BRAND);
         if (brand == null) {
             throw new IllegalArgumentException("Car requires a brand");
         }
 
+        // Check that the model is not null
         String model = values.getAsString(CarContract.CarEntry.COLUMN_CAR_MODEL);
         if (model == null) {
             throw new IllegalArgumentException("Car requires a model");
         }
 
-        // Check that the gender is valid
+        // Check that the fuel is valid
         Integer fuel = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_FUEL);
         if (fuel == null || !CarContract.CarEntry.isValidFuel(fuel)) {
             throw new IllegalArgumentException("Car requires valid fuel");
         }
 
-        // If the weight is provided, check that it's greater than or equal to 0 kg
+        // If the mileage is provided, check that it's greater than or equal to 0 km
         Integer mileage = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
         if (mileage != null && mileage < 0) {
             throw new IllegalArgumentException("Car requires valid mileage");
         }
 
-        // If the quantity is provided, check that it's greater than or equal to 0 kg
+        // If the quantity is provided, check that it's greater than or equal to 0
         Integer quantity = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
         if (quantity != null && quantity < 0) {
-            throw new IllegalArgumentException("Car requeries valid quantity");
+            throw new IllegalArgumentException("Car requires valid quantity");
         }
 
-        // If the quantity is provided, check that it's greater than or equal to 0 kg
+        // If the price is provided, check that it's greater than or equal to U$0
         Integer price = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_PRICE);
         if (price != null && price < 0) {
-            throw new IllegalArgumentException("Car requeries valid price");
+            throw new IllegalArgumentException("Car requires valid price");
         }
-
-
         // No need to check the breed, any value is valid (including null).
-
-
         // Get writeable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
-        // Insert the new pet with the given values
+        // Insert the new cars with the given values
         long id = database.insert(CarContract.CarEntry.TABLE_NAME, null, values);
         // If the ID is -1, then the insertion failed. Log an error and return null.
         if (id == -1) {
@@ -181,7 +180,7 @@ public class CarProvider extends ContentProvider {
             return null;
         }
 
-        // Notify all listeners that the data has changed for the pet content URI
+        // Notify all listeners that the data has changed for the car content URI
         getContext().getContentResolver().notifyChange(uri, null);
 
         // Return the new URI with the ID (of the newly inserted row) appended at the end
@@ -196,7 +195,7 @@ public class CarProvider extends ContentProvider {
             case CARS:
                 return updatePet(uri, contentValues, selection, selectionArgs);
             case CAR_ID:
-                // For the PET_ID code, extract out the ID from the URI,
+                // For the CAR_ID code, extract out the ID from the URI,
                 // so we know which row to update. Selection will be "_id=?" and selection
                 // arguments will be a String array containing the actual ID.
                 selection = CarContract.CarEntry._ID + "=?";
@@ -208,64 +207,69 @@ public class CarProvider extends ContentProvider {
     }
 
     /**
-     * Update pets in the database with the given content values. Apply the changes to the rows
-     * specified in the selection and selection arguments (which could be 0 or 1 or more pets).
+     * Update cars in the database with the given content values. Apply the changes to the rows
+     * specified in the selection and selection arguments (which could be 0 or 1 or more cars).
      * Return the number of rows that were successfully updated.
      */
     private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        // If the {@link PetEntry#COLUMN_PET_NAME} key is present,
-        // check that the name value is not null.
-        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_BRAND)) {
-            String brand = values.getAsString(CarContract.CarEntry.COLUMN_CAR_BRAND);
-            if (brand == null) {
-                throw new IllegalArgumentException("Car requires a brand");
+        //if there are no changes
+        if (values == null) {
+
+            // If the {@link PetEntry#COLUMN_CAR_BRAND} key is present,
+            // check that the name value is not null.
+            if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_BRAND)) {
+                String brand = values.getAsString(CarContract.CarEntry.COLUMN_CAR_BRAND);
+                if (brand == null) {
+                    throw new IllegalArgumentException("Car requires a brand");
+                }
             }
-        }
 
-        // If the {@link PetEntry#COLUMN_PET_NAME} key is present,
-        // check that the name value is not null.
-        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_MODEL)) {
-            String model = values.getAsString(CarContract.CarEntry.COLUMN_CAR_BRAND);
-            if (model == null) {
-                throw new IllegalArgumentException("Car requires a model");
+            // If the {@link PetEntry#COLUMN_CAR_MODEL} key is present,
+            // check that the name value is not null.
+            if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_MODEL)) {
+                String model = values.getAsString(CarContract.CarEntry.COLUMN_CAR_BRAND);
+                if (model == null) {
+                    throw new IllegalArgumentException("Car requires a model");
+                }
             }
-        }
 
-        // If the {@link PetEntry#COLUMN_PET_GENDER} key is present,
-        // check that the gender value is valid.
-        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_FUEL)) {
-            Integer fuel = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_FUEL);
-            if (fuel == null || !CarContract.CarEntry.isValidFuel(fuel)) {
-                throw new IllegalArgumentException("Car requires valid fuel");
+            // If the {@link PetEntry#COLUMN_CAR_FUEL} key is present,
+            // check that the gender value is valid.
+            if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_FUEL)) {
+                Integer fuel = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_FUEL);
+                if (fuel == null || !CarContract.CarEntry.isValidFuel(fuel)) {
+                    throw new IllegalArgumentException("Car requires valid fuel");
+                }
             }
-        }
 
-        // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
-        // check that the weight value is valid.
-        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_MILEAGE)) {
-            // Check that the weight is greater than or equal to 0 kg
-            Integer mileage = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
-            if (mileage != null && mileage < 0) {
-                throw new IllegalArgumentException("Car requires valid mileage");
+            // If the {@link PetEntry#COLUMN_CAR_MILEAGE} key is present,
+            // check that the weight value is valid.
+            if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_MILEAGE)) {
+                // Check that the weight is greater than or equal to 0 km
+                Integer mileage = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
+                if (mileage != null && mileage < 0) {
+                    throw new IllegalArgumentException("Car requires valid mileage");
+                }
             }
-        }
 
-        // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
-        // check that the quantity value is valid.
-        if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_QUANTITY)) {
-            // Check that the weight is greater than or equal to 0 kg
-            Integer quantity = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
-            if (quantity != null && quantity < 0) {
-                throw new IllegalArgumentException("Car requires valid quantity");
+            // If the {@link PetEntry#COLUMN_CAR_QUANTITY} key is present,
+            // check that the quantity value is valid.
+            if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_QUANTITY)) {
+                // Check that the quantity is greater than or equal to 0
+                Integer quantity = values.getAsInteger(CarContract.CarEntry.COLUMN_CAR_QUANTITY);
+                if (quantity != null && quantity < 0) {
+                    throw new IllegalArgumentException("Car requires valid quantity");
+                }
+
+                //Check that the car image is not null
+                if (values.containsKey(CarContract.CarEntry.COLUMN_CAR_IMAGE)) {
+                    throw new IllegalArgumentException("Car requires an image");
+                }
             }
-        }
-
-
-        // No need to check the breed, any value is valid (including null).
-
-        // If there are no values to update, then don't try to update the database
-        if (values.size() == 0) {
-            return 0;
+            // If there are no values to update, then don't try to update the database
+            if (values.size() == 0) {
+                return 0;
+            }
         }
 
         // Otherwise, get writeable database to update the data

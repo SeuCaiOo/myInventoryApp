@@ -33,8 +33,8 @@ public final class CarContract {
 
     /**
      * Possible path (appended to base content URI for possible URI's)
-     * For instance, content://com.example.android.pets/pets/ is a valid path for
-     * looking at pet data. content://com.example.android.pets/staff/ will fail,
+     * For instance, content://com.example.caioalvesdasilva.inventoryapp/cars/ is a valid path for
+     * looking at car data. content://com.example.caioalvesdasilva.inventoryapp/ will fail,
      * as the ContentProvider hasn't been given any information on what to do with "staff".
      */
     public static final String PATH_CARS = "cars";
@@ -42,7 +42,7 @@ public final class CarContract {
 
     /**
      * Inner class that defines constant values for the pets database table.
-     * Each entry in the table represents a single pet.
+     * Each entry in the table represents a single car.
      */
     public static final class CarEntry implements BaseColumns {
 
@@ -50,30 +50,32 @@ public final class CarContract {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_CARS);
 
         /**
-         * The MIME type of the {@link #BASE_CONTENT_URI} for a list of pets.
+         * The MIME type of the {@link #BASE_CONTENT_URI} for a list of cars.
          */
         public static final String CONTENT_LIST_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CARS;
 
         /**
-         * The MIME type of the {@link #BASE_CONTENT_URI} for a single pet.
+         * The MIME type of the {@link #BASE_CONTENT_URI} for a single car.
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CARS;
 
 
-        /** Name of database table for pets */
+        /** Name of database table for cars */
         public final static String TABLE_NAME = "cars";
 
+
         /**
-         * Unique ID number for the pet (only for use in the database table).
+         * Unique ID number for the car (only for use in the database table).
          *
          * Type: INTEGER
          */
         public final static String _ID = BaseColumns._ID;
 
+
         /**
-         * Breed of the pet.
+         * Brand of the car.
          *
          * Type: TEXT
          */
@@ -81,11 +83,12 @@ public final class CarContract {
 
 
         /**
-         * Name of the pet.
+         * Model of the car.
          *
          * Type: TEXT
          */
         public final static String COLUMN_CAR_MODEL = "model";
+
 
         /**
          * Year of the car.
@@ -104,7 +107,7 @@ public final class CarContract {
 
 
         /**
-         * Gender of the pet.
+         * Fuel of the car.
          *
          * The only possible values are {@link #FUEL_ALCOHOL}, {@link #FUEL_GASOLINE},
          * or {@link #FUEL_FLEX}.
@@ -113,6 +116,7 @@ public final class CarContract {
          */
         public final static String COLUMN_CAR_FUEL = "fuel";
 
+
         /**
          * Quantity of the car.
          *
@@ -120,17 +124,30 @@ public final class CarContract {
          */
         public final static String COLUMN_CAR_QUANTITY = "quantity";
 
+
         /**
-         * Price of the cars.
+         * Price of the car.
          *
          * Type: REAL
          */
         public final static String COLUMN_CAR_PRICE = "price";
 
 
+        /**
+         * Image of the car.
+         *
+         * Type: Text
+         */
+        public final static String COLUMN_CAR_IMAGE = "image";
 
 
+        /**
+         * Mileage of the car.
+         *
+         * Type: Text
+         */
         public final static String COLUMN_CAR_MILEAGE = "mileage";
+
 
         /**
          * Possible values for the fuel of the car.
@@ -140,7 +157,7 @@ public final class CarContract {
         public static final int FUEL_FLEX = 2;
 
         /**
-         * Returns whether or not the given gender is {@link #FUEL_ALCOHOL}, {@link #FUEL_GASOLINE},
+         * Returns whether or not the given fuel is {@link #FUEL_ALCOHOL}, {@link #FUEL_GASOLINE},
          * or {@link #FUEL_FLEX}.
          */
         public static boolean isValidFuel(int gender) {
