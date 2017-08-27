@@ -108,8 +108,8 @@ public class CatalogActivity extends AppCompatActivity implements
         values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, 1);
         values.put(CarContract.CarEntry.COLUMN_CAR_PRICE, 5000.00);
         values.put(CarContract.CarEntry.COLUMN_CAR_IMAGE, imgPath);
-        values.put(CarContract.CarEntry.COLUMN_SUPPLIER_NAME, "Caio");
-        values.put(CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL, "caiopimentel8@gmail.com");
+        values.put(CarContract.CarEntry.COLUMN_SUPPLIER_NAME, "Name");
+        values.put(CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL, "email@example.com");
         values.put(CarContract.CarEntry.COLUMN_CAR_MILEAGE, 1000);
 
         // Insert a new row for Golf into the provider using the ContentResolver.
