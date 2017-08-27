@@ -168,9 +168,9 @@
                         <Button
                             android:id="@+id/add_image"
                             style="@style/PlusMinusButtonStyle"
-                            android:layout_gravity="bottom"
-                            android:text="+"
-                            android:layout_marginRight="10dp" />
+                            android:layout_gravity="center"
+                            android:text="@string/plus"
+                            android:textStyle="bold" />
 
                         <TextView
                             style="@style/CategoryStyle"
@@ -216,15 +216,34 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp">
 
+                        <Button
+                            android:id="@+id/minus_car"
+                            style="@style/PlusMinusButtonStyle"
+                            android:layout_alignParentLeft="true"
+                            android:textStyle="bold"
+                            android:text="@string/minus" />
+
+
                         <!-- Quantity field -->
                         <EditText
                             android:id="@+id/edit_car_quantity"
                             style="@style/EditorFieldStyle"
                             android:hint="@string/hint_car_quantity"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:inputType="number"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true" />
+
+                        <Button
+                            android:id="@+id/plus_car"
+                            style="@style/PlusMinusButtonStyle"
+                            android:layout_alignParentRight="true"
+                            android:textStyle="bold"
+                            android:text="@string/plus" />
+
+
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_width="match_parent"

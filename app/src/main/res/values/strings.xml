@@ -125,4 +125,12 @@
     <!-- Label for the car's price if the price is 0.00 [CHAR LIMIT=20] -->
     <string name="unknown_price">0.00</string>
 
+    <string name="minus">-</string>
+
+    <string name="plus">+</string>
+
+    <string name="negative_car">You can not have a negative amount of cars</string>
+
+    <string name="sold_out">Car not available</string>
+
 </resources>

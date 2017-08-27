@@ -6,6 +6,7 @@ package com.example.caioalvesdasilva.inventoryapp;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -42,6 +43,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Allows user to create a new car or edit an existing one.
@@ -107,11 +110,21 @@ public class EditorActivity extends AppCompatActivity implements
     /**Button to order more cars from the supplier*/
     private Button mOrder;
 
+    //Button to increase Car
+    private Button mAddCar;
+
+    //Button to decrease Car
+    private Button mMinusCar;
+
     /** EditText field to enter the Car supplier Name*/
     private EditText mContactNameEditText;
 
     /** EditText field to enter the Car supplier Email*/
     private EditText mContactEmailEditText;
+
+
+
+
 
     /** Fuel of the car. The possible values are:
      * 0 for gasoline fuel, 1 for alcohol, 2 for flex.*/
@@ -172,6 +185,8 @@ public class EditorActivity extends AppCompatActivity implements
         mOrder = (Button) findViewById(R.id.email_button);
         mContactNameEditText = (EditText) findViewById(R.id.edit_supplier_name);
         mContactEmailEditText = (EditText) findViewById(R.id.edit_supplier_email);
+        mAddCar = (Button) findViewById(R.id.plus_car);
+        mMinusCar = (Button) findViewById(R.id.minus_car);
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
@@ -187,6 +202,11 @@ public class EditorActivity extends AppCompatActivity implements
         mOrder.setOnTouchListener(mTouchListener);
         mContactNameEditText.setOnTouchListener(mTouchListener);
         mContactEmailEditText.setOnTouchListener(mTouchListener);
+
+
+
+
+
 
         //Open camera when you press on Add image button
         mAddImageButton.setOnClickListener(new View.OnClickListener() {
@@ -225,12 +245,14 @@ public class EditorActivity extends AppCompatActivity implements
                 String modelName = mModelEditText.getText().toString();
                 String brandName = mBrandEditText.getText().toString();
                 String yearModel = mYearEditText.getText().toString();
+                String engine = mEngineEditText.getText().toString();
+                String quantityCar = mQuantityEditText.getText().toString();
                 String subject = "Order: " + modelName + " of the " + brandName;
                 String supplier = mContactNameEditText.getText().toString();
                 String sep = System.getProperty("line.separator");
                 String message = "Dear " + supplier + "," + sep +
-                        "I would like to order another 10 cars from the model "
-                        + modelName + " of the " + brandName + " - Year: " +
+                        "I would like to order another " + quantityCar + " cars from the model "
+                        + modelName + ": " + engine + " of the " + brandName + " - Year: " +
                         yearModel + "." + sep + "Greetings," + sep + "Caio";
                 emailIntent.setData(Uri.parse("mailto:" + to));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -246,6 +268,9 @@ public class EditorActivity extends AppCompatActivity implements
             }
 
         });
+
+
+
         setupSpinner();
     }
 
@@ -662,13 +687,15 @@ public class EditorActivity extends AppCompatActivity implements
             int supplierEmailColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_SUPPLIER_EMAIL);
             int mileageColumnIndex = cursor.getColumnIndex(CarContract.CarEntry.COLUMN_CAR_MILEAGE);
 
+
             // Extract out the value from the Cursor for the given column index
+            final long carId = cursor.getLong(idColumnIndex);
             String brand = cursor.getString(brandColumnIndex);
             String model = cursor.getString(modelColumnIndex);
             int year = cursor.getInt(yearColumnIndex);
             String  engine = cursor.getString(engineColumnIndex);
             int fuel = cursor.getInt(fuelColumnIndex);
-            int quantity = cursor.getInt(quantityColumnIndex);
+            final int quantity = cursor.getInt(quantityColumnIndex);
             String price = cursor.getString(priceColumnIndex);
             final String image = cursor.getString(imageColumnIndex);
             String supplierName = cursor.getString(supplierNameColumnIndex);
@@ -688,6 +715,7 @@ public class EditorActivity extends AppCompatActivity implements
             mContactEmailEditText.setText(supplierEmail);
             mMileageEditText.setText(Integer.toString(mileage));
 
+
             // Fuel is a dropdown spinner, so map the constant value from the database
             // into one of the dropdown options (0 is Gasoline, 1 is Alcohol, 2 is Flex).
             // Then call setSelection() so that option is displayed on screen as the current selection.
@@ -702,6 +730,44 @@ public class EditorActivity extends AppCompatActivity implements
                     mFuelSpinner.setSelection(0);
                     break;
             }
+
+
+            mAddCar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (quantity >= 0) {
+                        int newQuantity = quantity + 1;
+                        ContentValues values = new ContentValues();
+                        values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, newQuantity);
+                        Uri cardUri = ContentUris.withAppendedId(CarContract.CarEntry.CONTENT_URI, carId);
+                        int numRowsUpdated = EditorActivity.this.getContentResolver().update(cardUri, values, null, null);
+                        if (!(numRowsUpdated > 0)) {
+                            Log.e(TAG, EditorActivity.this.getString(R.string.editor_update_car_failed));
+                        }
+                    }
+                    int newQuantity = 0;
+
+                }
+            });
+
+            mMinusCar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (quantity >= 1) {
+                        int newQuantity = quantity - 1;
+                        ContentValues values = new ContentValues();
+                        values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, newQuantity);
+                        Uri carUri = ContentUris.withAppendedId(CarContract.CarEntry.CONTENT_URI, carId);
+                        int numRowsUpdated = EditorActivity.this.getContentResolver().update(carUri, values, null, null);
+                        if (!(numRowsUpdated > 0)) {
+                            Log.e(TAG, EditorActivity.this.getString(R.string.editor_update_car_failed));
+                        }
+                    } else if (!(quantity >= 1)) {
+                        Toast.makeText(EditorActivity.this, getString(R.string.negative_car), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
         }
     }
 

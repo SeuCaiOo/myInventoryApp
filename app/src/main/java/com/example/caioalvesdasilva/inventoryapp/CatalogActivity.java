@@ -19,11 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.caioalvesdasilva.inventoryapp.data.CarContract;
 
-import static com.example.caioalvesdasilva.inventoryapp.data.CarContract.CarEntry.COLUMN_CAR_QUANTITY;
 import static com.example.caioalvesdasilva.inventoryapp.data.CarContract.CarEntry.CONTENT_URI;
 
 public class CatalogActivity extends AppCompatActivity implements

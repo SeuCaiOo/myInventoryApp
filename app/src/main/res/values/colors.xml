@@ -14,4 +14,7 @@
 
     <!-- Primary dark color for the editor -->
     <color name="editorColorPrimaryDark">#394450</color>
+
+    <!-- Primary dark color for the editor -->
+    <color name="plusMinusButton">#000</color>
 </resources>

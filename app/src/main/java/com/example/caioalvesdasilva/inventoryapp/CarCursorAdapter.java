@@ -21,6 +21,7 @@ import com.example.caioalvesdasilva.inventoryapp.data.CarContract;
 
 import static android.R.attr.id;
 import static android.content.ContentValues.TAG;
+import static com.example.caioalvesdasilva.inventoryapp.EditorActivity.LOG_TAG;
 
 
 /**
@@ -73,7 +74,7 @@ public class CarCursorAdapter extends CursorAdapter {
     public void bindView(final View view, final Context context, Cursor cursor) {
         // Find individual views that we want to modify in the list item layout
         TextView brandTextView = (TextView) view.findViewById(R.id.carBrand);
-        TextView modelTextView = (TextView) view.findViewById(R.id.carModel);
+        final TextView modelTextView = (TextView) view.findViewById(R.id.carModel);
         TextView quantityView = (TextView) view.findViewById(R.id.carQuantity);
         TextView engineView = (TextView) view.findViewById(R.id.carEngine);
         TextView priceView = (TextView) view.findViewById(R.id.carPrice);
@@ -93,7 +94,7 @@ public class CarCursorAdapter extends CursorAdapter {
         String carEngine = cursor.getString (engineColumnIndex);
         String carPrice = "U$: " + cursor.getString(priceColumnsIndex);
         final int quantityCar = cursor.getInt(quantityColumnIndex);
-        int carId = cursor.getInt(cursor.getColumnIndex(CarContract.CarEntry._ID));
+        final int carId = cursor.getInt(cursor.getColumnIndex(CarContract.CarEntry._ID));
         final Uri currentCarUri = ContentUris.withAppendedId(CarContract.CarEntry.CONTENT_URI, carId);
 
         // If the car brand is empty string or null, then use some default text
@@ -130,21 +131,32 @@ public class CarCursorAdapter extends CursorAdapter {
         sellView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContentResolver resolver = view.getContext().getContentResolver();
-                ContentValues values = new ContentValues();
-                if (quantityCar > 0) {
-                    int qq = quantityCar;
-                    Log.d(TAG, "new quabtity= " + qq);
-                    values.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, --qq);
-                    resolver.update(
-                            currentCarUri,
-                            values,
-                            null,
-                            null
-                    );
-                    context.getContentResolver().notifyChange(currentCarUri, null);
-                } else {
-                    Toast.makeText(context, "Car not available", Toast.LENGTH_SHORT).show();
+
+                if (quantityCar >= 1) {
+
+                    Log.i(LOG_TAG, "TEST: On sale click Quantity is: " + quantityCar);
+                    int newQuantity = quantityCar - 1;
+                    Log.i(LOG_TAG, "TEST: On sale click Updated Quantity is: " + newQuantity);
+
+                    // Update table with new stock of the product
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(CarContract.CarEntry.COLUMN_CAR_QUANTITY, newQuantity);
+                    Uri carUri = ContentUris.withAppendedId(CarContract.CarEntry.CONTENT_URI, carId);
+                    Log.i(LOG_TAG, "TEST: On sale click ContentUri is: " + CarContract.CarEntry.CONTENT_URI);
+                    Log.i(LOG_TAG, "TEST: On sale click ContentUri_ID is: " + carUri);
+                    Log.i(LOG_TAG, "TEST: On sale click Model Name is: " + modelTextView);
+
+
+                    int numRowsUpdated = context.getContentResolver().update(carUri, contentValues, null, null);
+                    Log.i(LOG_TAG, "TEST: number Rows Updated: " + numRowsUpdated);
+
+                    if (!(numRowsUpdated > 0)) {
+                        Log.e(TAG, context.getString(R.string.editor_update_car_failed));
+                    }
+                } else if (!(quantityCar >= 1)) {
+                    int quantity = 0;
+                    Toast.makeText(context, R.string.sold_out, Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
